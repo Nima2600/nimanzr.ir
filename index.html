@@ -3,16 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>نیمانظر | مهندس شبکه</title>
+  <title>نیما نظری | مهندس شبکه</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+    :root {
+      --bg: #1e1e2f;
+      --text: #e0e0e0;
+      --accent: #58a6ff;
+      --card: #2c2f3a;
+      --border: #444;
+    }
+    body.light {
+      --bg: #f2f2f2;
+      --text: #222;
+      --accent: #0077cc;
+      --card: #ffffff;
+      --border: #ccc;
+    }
     body {
       margin: 0;
       font-family: 'Vazirmatn', sans-serif;
-      background-color: #1e1e2f;
-      color: #e0e0e0;
+      background-color: var(--bg);
+      color: var(--text);
       direction: rtl;
       display: flex;
+      transition: all 0.3s ease;
     }
     nav {
       width: 220px;
@@ -24,30 +39,31 @@
       border-left: 1px solid #333;
     }
     nav h2 {
-      color: #58a6ff;
+      color: var(--accent);
       font-size: 1.5em;
       margin-bottom: 30px;
     }
     nav a {
       display: block;
-      color: #c9d1d9;
+      color: var(--text);
       text-decoration: none;
       margin-bottom: 15px;
       font-size: 1.1em;
       cursor: pointer;
     }
     nav a:hover {
-      color: #58a6ff;
+      color: var(--accent);
     }
     nav button {
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 10px 15px;
-      background-color: #58a6ff;
+      background-color: var(--accent);
       border: none;
       border-radius: 5px;
       color: white;
       font-size: 1em;
       cursor: pointer;
+      width: 100%;
     }
     main {
       flex: 1;
@@ -62,20 +78,19 @@
     }
     h1 {
       font-size: 2.2em;
-      color: #58a6ff;
+      color: var(--accent);
       margin-bottom: 10px;
     }
     h2 {
       font-size: 1.5em;
-      color: #58a6ff;
-      border-bottom: 1px solid #333;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
       padding-bottom: 5px;
       margin-top: 40px;
     }
     p {
       font-size: 1.1em;
       line-height: 1.8;
-      color: #c9d1d9;
     }
     .grid {
       display: flex;
@@ -85,8 +100,8 @@
       justify-content: center;
     }
     .card {
-      background-color: #2c2f3a;
-      border: 1px solid #444;
+      background-color: var(--card);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 15px;
       width: 180px;
@@ -101,27 +116,44 @@
     }
     .skill-bar {
       height: 8px;
-      background: #444;
+      background: var(--border);
       border-radius: 5px;
       overflow: hidden;
       margin-top: 5px;
     }
     .skill-level {
       height: 100%;
-      background: #58a6ff;
+      background: var(--accent);
       width: 70%;
+    }
+    .socials a {
+      margin: 0 10px;
+      font-size: 1.2em;
+      color: var(--accent);
+      text-decoration: none;
     }
     footer {
       text-align: center;
       padding: 20px;
       font-size: 0.9em;
       color: #777;
-      border-top: 1px solid #333;
+      border-top: 1px solid var(--border);
       margin-top: 40px;
+    }
+    @media print {
+      nav, .toggle-buttons {
+        display: none;
+      }
+      main {
+        padding: 0 30px;
+      }
+      section {
+        display: block !important;
+      }
     }
   </style>
 </head>
-<body>
+<body class="dark">
 
 <nav>
   <h2>منو</h2>
@@ -130,55 +162,45 @@
   <a onclick="showSection('skills')">مهارت‌ها</a>
   <a onclick="showSection('contact')">تماس</a>
   <button onclick="printPage()">چاپ کل صفحه</button>
+  <button onclick="toggleTheme()">تغییر حالت شب/روز</button>
+  <button onclick="toggleLang()">تغییر زبان FA/EN</button>
 </nav>
 
 <main>
   <section id="about" class="active">
-    <h1>نیمانظر</h1>
+    <h1>نیما نظری</h1>
     <p>اینجا پر شود. اینجا پر شود. اینجا پر شود.</p>
   </section>
 
   <section id="certs">
     <h2>مدارک و گواهینامه‌ها</h2>
     <div class="grid">
-      <div class="card">
-        <img src="اینجا-لوگو-بذار.png" alt="لوگو" />
-        <p>اینجا پر شود</p>
-      </div>
-      <div class="card">
-        <img src="اینجا-لوگو-بذار.png" alt="لوگو" />
-        <p>اینجا پر شود</p>
-      </div>
+      <div class="card"><img src="logo.png" alt="Network+"><p>Network+</p></div>
+      <div class="card"><img src="logo.png" alt="CCNA"><p>CCNA</p></div>
+      <div class="card"><img src="logo.png" alt="CCNP"><p>CCNP</p></div>
     </div>
   </section>
 
   <section id="skills">
     <h2>نرم‌افزارها و دوره‌های تخصصی</h2>
     <div class="grid">
-      <div class="card">
-        <img src="اینجا-لوگو-بذار.png" alt="لوگو" />
-        <p>اینجا پر شود</p>
-        <div class="skill-bar">
-          <div class="skill-level" style="width: 90%;"></div>
-        </div>
-      </div>
-      <div class="card">
-        <img src="اینجا-لوگو-بذار.png" alt="لوگو" />
-        <p>اینجا پر شود</p>
-        <div class="skill-bar">
-          <div class="skill-level" style="width: 60%;"></div>
-        </div>
-      </div>
+      <div class="card"><img src="logo.png" alt="Wireshark"><p>Wireshark</p><div class="skill-bar"><div class="skill-level" style="width: 90%;"></div></div></div>
+      <div class="card"><img src="logo.png" alt="Issabel"><p>Issabel</p><div class="skill-bar"><div class="skill-level" style="width: 75%;"></div></div></div>
     </div>
   </section>
 
   <section id="contact">
     <h2>تماس با من</h2>
-    <p>اینجا پر شود. اینجا پر شود.</p>
+    <p>برای ارتباط با من از طریق شبکه‌های اجتماعی:</p>
+    <div class="socials">
+      <a href="https://wa.me/989000000000" target="_blank">واتس‌اپ</a>
+      <a href="https://t.me/username" target="_blank">تلگرام</a>
+      <a href="https://instagram.com/username" target="_blank">اینستاگرام</a>
+    </div>
   </section>
 
   <footer>
-    © 2025 نیمانظر — مهندس شبکه و توسعه‌دهنده
+    © 2025 نیما نظری — مهندس شبکه و توسعه‌دهنده
   </footer>
 </main>
 
@@ -189,8 +211,15 @@
   }
 
   function printPage() {
-    document.querySelectorAll('section').forEach(sec => sec.classList.add('active'));
     window.print();
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle('light');
+  }
+
+  function toggleLang() {
+    alert("در نسخه بعدی زبان انگلیسی اضافه خواهد شد :)");
   }
 </script>
 
