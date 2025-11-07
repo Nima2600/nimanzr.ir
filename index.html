@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>نیما نظری | مهندس شبکه</title>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
@@ -18,6 +18,7 @@
       --shadow: rgba(2,6,23,0.6);
       --ctrl-size:42px;
       --nav-width:260px;
+      --gap:24px;
     }
 
     /* Base reset */
@@ -30,9 +31,10 @@
       direction:rtl;
       min-height:100vh;
       display:flex;
-      gap:24px;
+      gap:var(--gap);
+      flex-direction:row;
       transition:background .25s ease,color .25s ease,transform .28s ease;
-      overflow-x:hidden; /* prevent accidental horizontal scroll on mobile */
+      overflow-x:hidden;
     }
 
     /* Controls */
@@ -60,7 +62,6 @@
     }
     .ctrl:active{ transform:scale(.97) }
 
-    /* printer + hamburger compact frame */
     .ctrl.small{
       width:44px;
       height:44px;
@@ -113,6 +114,8 @@
       gap:18px;
       color:var(--text);
       transition:all .18s ease,transform .28s cubic-bezier(.2,.9,.2,1);
+      flex: 0 0 var(--nav-width);
+      min-width: var(--nav-width);
     }
 
     nav h2{ margin:0 0 6px 0;font-size:1.15rem;color:var(--accent); letter-spacing:.2px; }
@@ -124,40 +127,53 @@
     section{ display:none }
     section.active{ display:block }
 
-    /* header / profile */
     header.profile{
       display:flex;gap:18px;align-items:center;justify-content:space-between;
       background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
       padding:18px;border-radius:12px;border:1px solid var(--border);
+      width:100%;
     }
-    .profile-left{ display:flex;gap:14px;align-items:center }
+    .profile-left{ display:flex;gap:14px;align-items:center; min-width:0; }
     .avatar{ width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-strong)); display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.1rem; box-shadow:0 8px 30px rgba(124,58,237,0.14); }
 
-    /* grids and cards */
+    /* credit (hidden in print) */
+    .credit { text-align:left; min-width:200px; }
+    .credit .label { color:var(--muted); font-size:0.95rem; }
+    .credit .who { margin-top:6px; font-weight:600; color:var(--accent); }
+
+    /* grid & cards */
     .grid{ display:flex;flex-wrap:wrap;gap:16px;margin-top:18px }
     .card{ background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;width:220px;text-align:center;box-shadow:0 8px 20px var(--shadow); min-width:0; }
-    .card img{ width:40px;height:40px;object-fit:contain;margin-bottom:10px }
+    .card img{ width:40px;height:40px;object-fit:contain;margin-bottom:10px; max-width:100%; }
 
-    /* contact */
     .contact-list{ display:flex;flex-direction:row;gap:14px;margin-top:14px;justify-content:center;align-items:center;flex-wrap:wrap }
     .logo{ width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--card); border:1px solid var(--border);color:var(--accent);flex:0 0 36px; }
 
     /* mobile-specific fixes */
-    /* Key fixes:
-       - switch layout to block on small screens (avoid flex horizontal gaps causing overflow)
-       - move controls to top-right and ensure main gets top padding so titles not covered
-       - make nav off-canvas overlay from right with backdrop
-       - lock body scroll when nav open
-    */
     #navToggle{ display:none; }
     .nav-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.48); opacity:0; pointer-events:none; transition:opacity .22s ease; z-index:1090; }
 
     @media (max-width:880px){
+      /* preserve flex layout but stack vertically; keeps widths predictable and avoids zoom issues */
       body{
-        display:block; /* prevents flex horizontal overflow and auto zoom issues */
+        flex-direction:column;
+        gap:0;
       }
 
-      /* controls: top-right reachable area */
+      /* nav becomes off-canvas and doesn't take inline space */
+      nav{
+        position:fixed;
+        top:0;
+        bottom:0;
+        right:0;
+        left:auto;
+        transform:translateX(110%);
+        width:100%;
+        max-width:420px;
+        z-index:1105;
+      }
+
+      /* controls top-right */
       .controls{
         left:auto;
         right:12px;
@@ -166,46 +182,26 @@
         z-index:1700;
       }
 
-      /* ensure main content is not covered by controls */
-      /* controls height ~48 + margin -> add comfortable top padding */
-      main{ padding: calc(18px + 64px) 16px 20px 16px; max-width:100%; }
+      /* ensure main content not covered by controls */
+      main{ padding: calc(18px + 64px) 16px 20px 16px; max-width:100%; width:100%; }
 
-      /* show toggle */
       #navToggle{ display:inline-grid; place-items:center; }
-
-      /* hamburger & print sizing */
       .ctrl.small{ width:48px; height:48px; padding:8px; border-radius:12px; }
-      #navToggle{ width:48px; height:48px; padding:8px; border-radius:12px; }
 
-      /* off-canvas nav from right */
-      nav{
-        width:100%;
-        max-width:420px;
-        position:fixed;
-        top:0;
-        bottom:0;
-        right:0;
-        left:auto;
-        transform:translateX(110%);
-        box-shadow: -8px 0 32px rgba(2,6,23,0.5);
-        border-left:0;
-        border-right:1px solid rgba(255,255,255,0.03);
-        padding:28px 20px;
-        z-index:1105;
-      }
       body.nav-open nav{ transform:translateX(0); }
-
-      /* backdrop visible when nav open */
       body.nav-open .nav-backdrop{ opacity:1; pointer-events:auto; }
 
-      /* nav links larger tap targets */
+      /* nav link larger */
       nav .nav-link{ font-size:1.06rem; padding:14px 12px; margin-bottom:8px; border-radius:10px; }
 
-      /* ensure no horizontal scroll due to cards */
-      .card{ width:calc(50% - 12px); min-width:0; }
+      /* cards full width (stack) on small screens to avoid wrapping issues */
+      .card{ width:100%; }
       .grid{ gap:12px; }
 
-      /* tooltip adjustment */
+      /* reduce side nav footprint when visible on small */
+      nav{ box-shadow: -8px 0 32px rgba(2,6,23,0.45); border-right:1px solid rgba(255,255,255,0.03); padding:28px 18px; }
+      .profile-left { min-width:0; }
+
       .ctrl .tooltip{ left:auto; right:50%; transform:translateX(50%); max-width:180px; word-break:keep-all; }
     }
 
@@ -218,7 +214,11 @@
       nav,.controls,.nav-backdrop{ display:none !important }
       main{ padding:0 }
       section{ display:block !important }
+      .credit{ display:none !important; }
     }
+
+    /* small polish: prevent long words breaking layout */
+    h1,h2,p,li{ word-break: break-word; }
   </style>
 </head>
 <body class="dark" dir="rtl" data-lang="fa">
@@ -253,13 +253,15 @@
   </div>
 
   <nav aria-label="ناوبری" id="mainNav">
-    <h2 id="navTitle"></h2>
+    <h2 id="navTitle">منو</h2>
     <a class="nav-link" data-target="about">درباره من</a>
     <a class="nav-link" data-target="bio">زندگی‌نامه</a>
     <a class="nav-link" data-target="certs">مدارک</a>
     <a class="nav-link" data-target="skills">مهارت‌ها</a>
     <a class="nav-link" data-target="contact">تماس</a>
+
     <div class="nav-actions"></div>
+
     <div class="nav-footer" id="navFooter">© <span id="yearNav"></span> نیما نظری</div>
   </nav>
 
@@ -273,9 +275,11 @@
             <p id="subtitle">مهندس شبکه و توسعه‌دهنده</p>
           </div>
         </div>
-        <div style="text-align:left;min-width:200px">
-          <div style="color:var(--muted);font-size:0.95rem">طراحی شده توسط:</div>
-          <div style="margin-top:6px;font-weight:600;color:var(--accent)">Microsoft Copilot</div>
+
+        <!-- credit block: visible on screen, hidden in print -->
+        <div class="credit" aria-hidden="false">
+          <div class="label">طراحی شده توسط:</div>
+          <div class="who">Microsoft Copilot</div>
         </div>
       </header>
 
@@ -290,7 +294,7 @@
 
     <section id="contact" aria-labelledby="contact-title">
       <h2 id="contact-title">تماس با من</h2>
-      <p style="color:var(--muted)">لوگوها لینک دارند و در صفحهٔ وب به‌صورت افقی و وسط‌چین نمایش داده می‌شوند. در چاپ هر لینک در یک خط جدا قرار می‌گیرد و مقدار متنی بین دو لوگو مربوطه محاط می‌شود.</p>
+      <p style="color:var(--muted)">لوگوها لینک دارند و در صفحهٔ وب به‌صورت افقی و وسط‌چین نمایش داده می‌شوند.</p>
 
       <div class="contact-list" role="list">
         <div class="contact-item" role="listitem">
@@ -341,7 +345,7 @@
     const qsa = s => Array.from(document.querySelectorAll(s));
     qs('#yearNav') && (qs('#yearNav').textContent = new Date().getFullYear());
 
-    // Basic navigation
+    // Navigation links
     qsa('.nav-link').forEach(a=>{
       a.addEventListener('click', ()=>{
         const t = a.getAttribute('data-target');
@@ -353,7 +357,7 @@
       });
     });
 
-    // Skill bars
+    // skill animation
     function animateSkills(){
       qsa('.skill-level').forEach(el=>{
         const v = el.getAttribute('data-level') || 60;
@@ -362,12 +366,12 @@
     }
     window.addEventListener('load', animateSkills);
 
-    // Accessible activation
+    // accessible activation
     qsa('.nav-link, .ctrl, .contact-item a').forEach(el=>{
       el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
     });
 
-    // Mobile nav: toggle, backdrop, scroll lock
+    // Mobile nav toggle & backdrop & scroll-lock logic
     (function(){
       const navToggle = document.getElementById('navToggle');
       const bodyEl = document.body;
@@ -429,7 +433,7 @@
       window.closeNavImmediate = closeNavImmediate;
     })();
 
-    // Print preview handling (robust)
+    // Print preview handling
     (function(){
       let savedActive = null;
       let savedScroll = { x:0, y:0 };
