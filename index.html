@@ -47,9 +47,45 @@
       display:inline-grid;place-items:center;
       background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;
       box-shadow:0 8px 22px var(--shadow);transition:transform .12s ease,background .18s;
+      position:relative;
+      overflow:visible;
     }
     .ctrl:active{ transform:scale(.97) }
     .ctrl.small{ width:36px;height:36px;border-radius:50% }
+
+    /* tooltip for print button */
+    .ctrl .tooltip{
+      position:absolute;
+      top:calc(100% + 8px);
+      left:50%;
+      transform:translateX(-50%);
+      background:rgba(10,10,12,0.9);
+      color:#fff;
+      font-size:13px;
+      padding:6px 8px;
+      border-radius:6px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.35);
+      white-space:nowrap;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .12s ease,transform .12s ease;
+      transform-origin:50% 0%;
+      z-index:1200;
+    }
+    .ctrl:focus .tooltip,
+    .ctrl:focus-visible .tooltip,
+    .ctrl:hover .tooltip{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+      pointer-events:auto;
+    }
+
+    /* ensure visible tooltip with keyboard focus */
+    .ctrl:focus{ outline:2px solid rgba(159,122,234,0.18); outline-offset:3px; border-radius:10px; }
+
+    /* SVG styling: printer icon will be single-color on web (currentColor) and forced black in print */
+    .ctrl svg{ width:20px;height:20px; display:block; color:currentColor; stroke:currentColor; fill:none; }
+    .ctrl svg .paper { fill:currentColor; stroke:none; opacity:0.96; } /* small filled paper area */
 
     nav{
       width:240px;
@@ -168,12 +204,25 @@
 <body class="dark" dir="rtl" data-lang="fa">
 
   <div class="controls" aria-hidden="false">
+    <!-- Print button: updated single-color printer icon and visible tooltip on hover/focus -->
     <button class="ctrl small" id="printCtrl" title="چاپ" aria-label="چاپ" type="button">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-        <title>پرینتر</title>
-        <rect x="3" y="7" width="18" height="8" rx="1.2" ry="1.2"></rect>
-        <rect x="7.2" y="2" width="9.6" height="6" rx="0.8" ry="0.8"></rect>
+      <!-- Minimal black-and-white printer icon (front view with paper lines) -->
+      <svg viewBox="0 0 24 24" role="img" aria-hidden="false" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <!-- body -->
+        <rect x="3" y="6" width="18" height="5" rx="1" ry="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+        <!-- top unit -->
+        <rect x="7" y="2" width="10" height="5" rx="0.6" ry="0.6" stroke="currentColor" stroke-width="1.2" fill="none"/>
+        <!-- paper (filled slightly to appear as paper) -->
+        <rect class="paper" x="6.5" y="9.2" width="11" height="7" rx="0.8" ry="0.8" />
+        <!-- paper text lines -->
+        <rect x="8" y="10.4" width="8" height="0.9" rx="0.3" ry="0.3" fill="none" stroke="currentColor" stroke-width="1" />
+        <rect x="8" y="12"   width="6" height="0.9" rx="0.3" ry="0.3" fill="none" stroke="currentColor" stroke-width="1" />
+        <rect x="8" y="13.6" width="5" height="0.9" rx="0.3" ry="0.3" fill="none" stroke="currentColor" stroke-width="1" />
+        <!-- small feet -->
+        <rect x="5" y="17.2" width="14" height="2" rx="0.6" ry="0.6" stroke="currentColor" stroke-width="1" fill="none" />
       </svg>
+
+      <span class="tooltip" role="status" aria-hidden="true">چاپ</span>
     </button>
   </div>
 
@@ -219,7 +268,6 @@
       <h2 id="contact-title">تماس با من</h2>
       <p style="color:var(--muted)">لوگوها لینک دارند و در صفحهٔ وب به‌صورت افقی و وسط‌چین نمایش داده می‌شوند. در چاپ هر لینک در یک خط جدا قرار می‌گیرد و مقدار متنی بین دو لوگو مربوطه محاط می‌شود.</p>
 
-      <!-- Web: inline logos centered; values visually hidden -->
       <div class="contact-list" aria-hidden="false" role="list">
         <div class="contact-item" role="listitem">
           <a href="mailto:info@example.com" title="ایمیل" aria-label="ایمیل">
@@ -437,6 +485,9 @@
           enterPrintPreview();
           setTimeout(()=>{ window.print(); }, 120);
         });
+
+        // also show tooltip text when focused via keyboard (accessible)
+        printBtn.addEventListener('focus', ()=>{ /* tooltip shown via CSS */ });
       }
 
       // Use beforeprint/afterprint where available
