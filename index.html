@@ -52,7 +52,19 @@
       overflow:visible;
     }
     .ctrl:active{ transform:scale(.97) }
-    .ctrl.small{ width:36px;height:36px;border-radius:10px; }
+    /* ===== printer button frame: slightly bigger, centered icon ===== */
+    .ctrl.small{
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      padding:6px;
+      display:inline-grid;
+      place-items:center;
+    }
+    /* make printer SVG a tiny bit larger and ensure it fills available space */
+    .ctrl.small svg{ width:22px; height:22px; }
+    /* if paper fill looks off after scaling, reduce its size slightly */
+    .ctrl.small svg .paper{ transform-origin:center; transform:scale(0.95); }
 
     /* tooltip for print button */
     .ctrl .tooltip{
@@ -166,6 +178,34 @@
     /* mobile nav toggle hidden on desktop */
     #navToggle{ display:none; }
 
+    /* ===== mobile hamburger: visible, high-contrast, larger hit area, animated ===== */
+    #navToggle{
+      display:none;
+      background:transparent;
+      border:none;
+      padding:6px;
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      color:var(--text);
+      cursor:pointer;
+      transition:background .18s ease, box-shadow .18s ease, transform .12s ease;
+      box-shadow: 0 8px 22px rgba(2,6,23,0.45);
+    }
+    #navToggle:hover,
+    #navToggle:focus{
+      background: linear-gradient(180deg, rgba(124,58,237,0.12), rgba(159,122,234,0.06));
+      color: var(--accent);
+      transform:translateY(-1px);
+      outline: none;
+    }
+    /* make the hamburger lines thicker and darker for readability */
+    #navToggle svg g line{
+      stroke-width:2.4;
+      stroke: currentColor;
+      transition: transform .22s cubic-bezier(.2,.9,.2,1), opacity .18s ease;
+    }
+
     @media (max-width:880px){
       /* show toggle */
       #navToggle{ display:inline-grid; place-items:center; }
@@ -186,16 +226,16 @@
       }
       /* when open */
       body.nav-open nav{ transform:translateX(0); }
-      body.nav-open main{ transform:translateX(var(--nav-width)); }
+      body.nav-open main{ transform:translateX(calc(var(--nav-width) - 28px)); }
 
       /* hamburger animation to X */
       #navToggle .h1, #navToggle .h2, #navToggle .h3{
         transition: transform .18s ease, opacity .12s ease;
         transform-origin:center;
       }
-      body.nav-open #navToggle .h1{ transform: translateY(5px) rotate(45deg); }
-      body.nav-open #navToggle .h2{ opacity:0; transform: scaleX(0.6); }
-      body.nav-open #navToggle .h3{ transform: translateY(-5px) rotate(-45deg); }
+      body.nav-open #navToggle .h1{ transform: translateY(6px) rotate(45deg); }
+      body.nav-open #navToggle .h2{ opacity:0; transform: scaleX(0.5); }
+      body.nav-open #navToggle .h3{ transform: translateY(-6px) rotate(-45deg); }
 
       /* small screen adjustments for layout */
       main{ padding:18px }
@@ -290,8 +330,8 @@
           </div>
         </div>
         <div style="text-align:left;min-width:200px">
-          <div style="color:var(--muted);font-size:0.95rem">برای دمو</div>
-          <div style="margin-top:6px;font-weight:600;color:var(--accent)">nimazr.ir</div>
+          <div style="color:var(--muted);font-size:0.95rem">خوش آمدید</div>
+          <div style="margin-top:6px;font-weight:600;color:var(--accent)">طراحی شده توسط کوپایلت</div>
         </div>
       </header>
 
