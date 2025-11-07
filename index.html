@@ -16,10 +16,11 @@
       --accent-strong:#7c3aed;
       --border:rgba(255,255,255,0.06);
       --shadow: rgba(2,6,23,0.6);
+      --ctrl-size:42px;
     }
     body.light{
       --bg:#f7f7fb;
-      --panel:#0d0f18; /* keep nav dark even in light mode */
+      --panel:#0d0f18; /* keep nav dark always */
       --card:#ffffff;
       --text:#16202a;
       --muted:#5b6770;
@@ -42,7 +43,7 @@
       transition:background .25s ease,color .25s ease;
     }
 
-    /* top small circular controls (print + theme + lang) */
+    /* top controls */
     .controls{
       position:fixed;
       top:14px;
@@ -51,17 +52,25 @@
       gap:10px;
       z-index:999;
     }
-    body[dir="ltr"] .controls{ left:auto; right:14px }
+    [dir="ltr"] .controls{ left:auto; right:14px }
     .ctrl{
-      width:36px;height:36px;border-radius:50%;
+      width:var(--ctrl-size);height:var(--ctrl-size);border-radius:10px;
       display:inline-grid;place-items:center;
-      background:var(--accent);
-      color:#fff;border:2px solid #fff;cursor:pointer;
-      box-shadow:0 6px 18px var(--shadow);
-      transition:transform .12s ease,background .18s;
+      background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;
+      box-shadow:0 8px 22px var(--shadow);transition:transform .12s ease,background .18s;
     }
-    .ctrl:active{ transform:scale(.96) }
-    .ctrl.lang{ background:transparent;color:var(--accent); border:2px solid var(--accent); font-weight:700; font-size:0.85rem; padding:0 6px; }
+    .ctrl:active{ transform:scale(.97) }
+    .ctrl.small{ width:36px;height:36px;border-radius:50% }
+    .ctrl.lang{ background:transparent;color:var(--accent); border:2px solid var(--accent); font-weight:700; padding:6px 10px; }
+
+    /* tooltip */
+    .ctrl[title]{ position:relative }
+    .ctrl[title]:hover::after{
+      content:attr(title); position:absolute; white-space:nowrap; bottom:-36px;
+      background:var(--panel); color:var(--text); padding:6px 10px; border-radius:6px; font-size:13px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.5);
+      transform:translateY(6px); opacity:1;
+    }
 
     /* layout */
     nav{
@@ -77,25 +86,17 @@
       flex-direction:column;
       gap:18px;
       color:var(--text);
+      transition:all .18s ease;
     }
-    nav h2{
-      margin:0 0 6px 0;font-size:1.15rem;color:var(--accent);
-      letter-spacing:.2px;
-    }
-    .nav-link{
-      display:block;padding:10px 12px;border-radius:8px;color:var(--text);
-      text-decoration:none;font-weight:500;cursor:pointer;
-    }
+    [dir="ltr"] nav{ order:-1; border-left:0; border-right:1px solid var(--border) }
+    nav h2{ margin:0 0 6px 0;font-size:1.15rem;color:var(--accent); letter-spacing:.2px; }
+    .nav-link{ display:block;padding:10px 12px;border-radius:8px;color:var(--text); text-decoration:none;font-weight:500;cursor:pointer; }
     .nav-link:hover{ background:rgba(255,255,255,0.02); color:var(--accent) }
     .nav-actions{ margin-top:auto; display:flex;flex-direction:column; gap:10px }
-    .btn{
-      background:var(--accent); color:#fff;border:none;padding:10px;border-radius:8px;
-      cursor:pointer;font-weight:600;box-shadow:0 6px 18px var(--shadow);
-    }
+    .btn{ background:var(--accent); color:#fff;border:none;padding:10px;border-radius:8px; cursor:pointer;font-weight:600;box-shadow:0 6px 18px var(--shadow); }
     .btn.ghost{ background:transparent;color:var(--text);border:1px solid var(--border) }
-    main{
-      flex:1;padding:34px; max-width:980px; margin-bottom:40px;
-    }
+
+    main{ flex:1;padding:34px; max-width:980px; margin-bottom:40px; transition:margin .18s ease; }
 
     /* sections */
     section{ display:none }
@@ -106,36 +107,29 @@
       padding:18px;border-radius:12px;border:1px solid var(--border);
     }
     .profile-left{ display:flex;gap:14px;align-items:center }
-    .avatar{
-      width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));
-      display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.1rem;
-      box-shadow:0 8px 30px rgba(124,58,237,0.14);
-    }
+    .avatar{ width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-strong)); display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.1rem; box-shadow:0 8px 30px rgba(124,58,237,0.14); }
     .profile-meta h1{ margin:0;font-size:1.6rem }
     .profile-meta p{ margin:6px 0 0 0;color:var(--muted);font-size:0.95rem }
 
     /* cards/grid */
     .grid{ display:flex;flex-wrap:wrap;gap:16px;margin-top:18px }
-    .card{
-      background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;
-      width:220px;text-align:center;box-shadow:0 8px 20px var(--shadow);
-    }
+    .card{ background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;width:220px;text-align:center;box-shadow:0 8px 20px var(--shadow); }
     .card img{ width:40px;height:40px;object-fit:contain;margin-bottom:10px }
     .card p{ margin:0;font-weight:600 }
 
-    /* skill bar */
+    /* skills */
     .skill-bar{ height:10px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:10px }
     .skill-level{ height:100%; background:linear-gradient(90deg,var(--accent-strong),var(--accent)); width:0; transition:width .6s ease }
 
     /* contact: logo next to username, no textual network names */
     .contact-list{ display:flex;flex-direction:column;gap:12px;margin-top:14px;align-items:flex-start }
-    .contact-item{ display:flex;gap:10px;align-items:center }
-    .contact-item a{ display:inline-flex;gap:8px;align-items:center;text-decoration:none;color:var(--text) }
-    .logo{
-      width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--card);
-      border:1px solid var(--border);color:var(--accent);flex:0 0 34px;
-    }
+    .contact-item{ display:flex;gap:12px;align-items:center }
+    .contact-item a{ display:inline-flex;gap:12px;align-items:center;text-decoration:none;color:var(--text) }
+    .logo{ width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--card); border:1px solid var(--border);color:var(--accent);flex:0 0 36px; }
     .contact-text{ color:var(--muted); font-weight:600; font-size:0.98rem }
+
+    /* biography button in nav */
+    .bio-btn{ display:block;padding:10px 12px;border-radius:8px;background:transparent;color:var(--text);border:1px solid var(--border);cursor:pointer;font-weight:600; text-align:center; }
 
     /* print contact: show only plaintext usernames/phone centered */
     .print-contact{ display:none;font-size:0.98rem;color:var(--text);text-align:center;margin-top:14px }
@@ -148,19 +142,17 @@
       .contact-list{ display:none }
       .card{ box-shadow:none;border:1px solid #ddd;background:transparent }
       .avatar{ display:none }
-      footer{ display:none }
       /* center certs & skills */
       #certs .grid, #skills .grid{ justify-content:center }
       .card{ margin:0 6px }
     }
 
-    /* footer inside nav (dashboard) */
-    .nav-footer{ margin-top:12px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:0.9rem;text-align:center }
+    /* hide any main-level footer (we removed it) */
+    footer{ display:none }
 
     /* responsive */
     @media (max-width:880px){
       nav{ display:none }
-      body{ direction:rtl }
       .controls{ left:10px }
       main{ padding:18px }
       .grid{ justify-content:flex-start }
@@ -170,15 +162,15 @@
 <body class="dark" dir="rtl" data-lang="fa">
 
   <div class="controls" aria-hidden="false">
-    <button class="ctrl" id="printCtrl" title="چاپ" aria-label="Print">
-      <!-- standard printer SVG -->
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+    <button class="ctrl small" id="printCtrl" title="چاپ" aria-label="Print">
+      <!-- clearer, larger printer SVG -->
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false">
         <path d="M19 8H5a1 1 0 00-1 1v6h3v3h10v-3h3V9a1 1 0 00-1-1zM7 18v-3h10v3H7zM17 4H7v3h10V4z"/>
       </svg>
     </button>
 
-    <button class="ctrl theme" id="themeCtrl" title="تغییر حالت" aria-label="Toggle theme">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+    <button class="ctrl small theme" id="themeCtrl" title="تغییر حالت" aria-label="Toggle theme">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
         <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
       </svg>
     </button>
@@ -193,14 +185,13 @@
     <a class="nav-link" data-target="skills">مهارت‌ها</a>
     <a class="nav-link" data-target="contact">تماس</a>
 
+    <button class="bio-btn" id="openBio">زندگی‌نامه</button>
+
     <div class="nav-actions">
-      <!-- intentionally empty: controls moved to top -->
-      <div style="height:10px"></div>
+      <div style="height:6px"></div>
     </div>
 
-    <div class="nav-footer">
-      © <span id="yearNav"></span> نیما نظری
-    </div>
+    <div class="nav-footer" id="navFooter">© <span id="yearNav"></span> نیما نظری</div>
   </nav>
 
   <main>
@@ -220,8 +211,10 @@
       </header>
 
       <p style="margin-top:18px;color:var(--muted)">خلاصه‌ای کوتاه درباره‌ی نیما. اینجا می‌تونی یک خط درباره تجربه و تخصص‌هات بنویسی ــ مختصر و حرفه‌ای.</p>
+    </section>
 
-      <h2 style="margin-top:22px;color:var(--accent)">زندگی‌نامه</h2>
+    <section id="bio" aria-labelledby="bio">
+      <h2>زندگی‌نامه</h2>
       <p style="color:var(--muted)">نیما نظری، مهندس شبکه با تجربه در طراحی، پیاده‌سازی و عیب‌یابی شبکه‌های متوسط تا بزرگ. علاقه‌مند به تحلیل ترافیک، امن‌سازی لایه‌های شبکه و استفاده از ابزارهای Open Source برای اتوماسیون و مانیتورینگ.</p>
     </section>
 
@@ -252,34 +245,31 @@
 
     <section id="contact" aria-labelledby="contact">
       <h2>تماس با من</h2>
-      <p style="color:var(--muted)">در صفحه نمایش لوگوها کنار یوزرنیم‌ها قرار می‌گیرند. در چاپ فقط متن یوزرنیم‌ها و شماره تلفن نمایش داده می‌شود.</p>
+      <p style="color:var(--muted)">لوگوها کنار یوزرنیم‌ها قرار می‌گیرند؛ در چاپ فقط یوزرنیم‌ها و شماره تلفن نمایش داده می‌شوند.</p>
 
       <div class="contact-list" aria-hidden="false">
         <div class="contact-item">
-          <a href="https://wa.me/989000000000" target="_blank" aria-label="WhatsApp">
+          <a href="https://wa.me/989000000000" target="_blank" aria-label="واتس‌اپ">
             <span class="logo" aria-hidden="true">
-              <!-- WhatsApp SVG standard -->
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
             </span>
             <span class="contact-text">09000000000</span>
           </a>
         </div>
 
         <div class="contact-item">
-          <a href="https://t.me/username" target="_blank" aria-label="Telegram">
+          <a href="https://t.me/username" target="_blank" aria-label="تلگرام">
             <span class="logo" aria-hidden="true">
-              <!-- Telegram SVG standard -->
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
             </span>
             <span class="contact-text">@username</span>
           </a>
         </div>
 
         <div class="contact-item">
-          <a href="https://instagram.com/username" target="_blank" aria-label="Instagram">
+          <a href="https://instagram.com/username" target="_blank" aria-label="اینستاگرام">
             <span class="logo" aria-hidden="true">
-              <!-- Instagram SVG standard -->
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
             </span>
             <span class="contact-text">@username</span>
           </a>
@@ -290,20 +280,13 @@
         09000000000  |  @username  |  @username
       </div>
     </section>
-
-    <footer id="siteFooter" aria-hidden="true">
-      <div id="copyright">© <span id="year"></span> نیما نظری — مهندس شبکه و توسعه‌دهنده</div>
-    </footer>
   </main>
 
   <script>
     const qs = s => document.querySelector(s);
     const qsa = s => Array.from(document.querySelectorAll(s));
-
-    // year in nav footer and main footer
-    const y = new Date().getFullYear();
-    qs('#yearNav').textContent = y;
-    qs('#year').textContent = y;
+    const year = new Date().getFullYear();
+    qs('#yearNav').textContent = year;
 
     // navigation
     qsa('.nav-link').forEach(a=>{
@@ -316,56 +299,63 @@
       });
     });
 
-    // print control (top)
-    qs('#printCtrl').addEventListener('click', ()=>{
-      qsa('section').forEach(s=>s.classList.add('active'));
-      setTimeout(()=>window.print(),150);
+    // biography button (nav)
+    qs('#openBio').addEventListener('click', ()=>{
+      qsa('section').forEach(sec=>sec.classList.remove('active'));
+      qs('#bio').classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
     });
 
-    // theme: only affects body & content; nav stays dark
-    function setTheme(isLight){
-      document.body.classList.toggle('light', !!isLight);
-      // ensure nav stays dark in light mode by forcing panel variable via inline style when light
+    // print control
+    qs('#printCtrl').addEventListener('click', ()=>{
+      // ensure all sections visible for print
+      qsa('section').forEach(s=>s.classList.add('active'));
+      setTimeout(()=>window.print(), 120);
+    });
+
+    // theme: affect content but keep nav dark
+    function setTheme(light){
+      document.body.classList.toggle('light', !!light);
+      // ensure nav background keeps dark appearance
+      const nav = qs('nav');
       if(document.body.classList.contains('light')){
-        document.querySelectorAll('nav').forEach(n => n.style.background = 'linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02))');
+        nav.style.background = 'linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02))';
       } else {
-        document.querySelectorAll('nav').forEach(n => n.style.background = '');
+        nav.style.background = '';
       }
     }
-    function toggleTheme(){ setTheme(!document.body.classList.contains('light')); }
-    qs('#themeCtrl').addEventListener('click', toggleTheme);
+    qs('#themeCtrl').addEventListener('click', ()=> setTheme(!document.body.classList.contains('light')));
+    setTheme(false);
 
-    // language toggle: convert all texts, aria-labels, direction
+    // language switching: full-site translation + dir + nav side
     function setLang(lang){
       if(lang === 'en'){
         document.body.dataset.lang = 'en';
         document.documentElement.lang = 'en';
         document.body.setAttribute('dir','ltr');
-        // controls position handled by [dir="ltr"] CSS
+        // translate nav & headings
         const en = ['About','Certificates','Skills','Contact'];
         qsa('.nav-link').forEach((el, idx)=> el.textContent = en[idx]);
         qs('#navTitle').textContent = 'Menu';
         qs('#fullName').textContent = 'Nima Nazari';
         qs('#subtitle').textContent = 'Network Engineer & Developer';
+        qs('#openBio').textContent = 'Biography';
+        qs('#yearNav').parentElement.innerHTML = `© ${year} Nima Nazari`;
         // section headings
         qs('#about h2')?.remove?.();
         qs('#certs h2').textContent = 'Certificates';
         qs('#skills h2').textContent = 'Skills & Tools';
         qs('#contact h2').textContent = 'Contact';
-        // contact aria-labels
-        qsa('.contact-item a').forEach((a, i)=>{
+        // controls position handled by CSS via [dir="ltr"]
+        qs('#langCtrl').textContent = 'EN';
+        // ARIA
+        qsa('.contact-item a').forEach((a,i)=>{
           if(i===0) a.setAttribute('aria-label','WhatsApp');
           if(i===1) a.setAttribute('aria-label','Telegram');
           if(i===2) a.setAttribute('aria-label','Instagram');
         });
         qs('#printCtrl').setAttribute('title','Print');
         qs('#themeCtrl').setAttribute('title','Toggle theme');
-        qs('#langCtrl').textContent = 'EN';
-        // footer text
-        qs('.nav-footer').innerHTML = `© ${y} Nima Nazari`;
-        qs('#siteFooter').innerHTML = `<div>© ${y} Nima Nazari — Network Engineer & Developer</div>`;
-        // print contact text
-        qs('.print-contact').textContent = '09000000000  |  @username  |  @username';
       } else {
         document.body.dataset.lang = 'fa';
         document.documentElement.lang = 'fa';
@@ -375,10 +365,12 @@
         qs('#navTitle').textContent = 'منو';
         qs('#fullName').textContent = 'نیما نظری';
         qs('#subtitle').textContent = 'مهندس شبکه و توسعه‌دهنده';
+        qs('#openBio').textContent = 'زندگی‌نامه';
+        qs('#yearNav').parentElement.innerHTML = `© ${year} نیما نظری`;
         qs('#certs h2').textContent = 'مدارک و گواهینامه‌ها';
         qs('#skills h2').textContent = 'نرم‌افزارها و دوره‌های تخصصی';
         qs('#contact h2').textContent = 'تماس با من';
-        qsa('.contact-item a').forEach((a, i)=>{
+        qsa('.contact-item a').forEach((a,i)=>{
           if(i===0) a.setAttribute('aria-label','واتس‌اپ');
           if(i===1) a.setAttribute('aria-label','تلگرام');
           if(i===2) a.setAttribute('aria-label','اینستاگرام');
@@ -386,16 +378,11 @@
         qs('#printCtrl').setAttribute('title','چاپ');
         qs('#themeCtrl').setAttribute('title','تغییر حالت');
         qs('#langCtrl').textContent = 'FA';
-        qs('.nav-footer').innerHTML = `© ${y} نیما نظری`;
-        qs('#siteFooter').innerHTML = `<div>© ${y} نیما نظری — مهندس شبکه و توسعه‌دهنده</div>`;
-        qs('.print-contact').textContent = '09000000000  |  @username  |  @username';
       }
+      // reposition nav for LTR/RTL handled by CSS; ensure layout updates
+      setTimeout(()=>window.dispatchEvent(new Event('resize')), 50);
     }
-    function toggleLang(){ setLang(document.body.dataset.lang === 'fa' ? 'en' : 'fa'); }
-    qs('#langCtrl').addEventListener('click', toggleLang);
-
-    // init
-    setTheme(false);
+    qs('#langCtrl').addEventListener('click', ()=> setLang(document.body.dataset.lang === 'fa' ? 'en' : 'fa'));
     setLang('fa');
 
     // animate skill bars
@@ -408,13 +395,11 @@
     window.addEventListener('load', animateSkills);
 
     // keyboard accessibility
-    qsa('.nav-link, .btn, .ctrl').forEach(el=>{
-      el.addEventListener('keydown', e=>{
-        if(e.key === 'Enter' || e.key === ' ') el.click();
-      });
+    qsa('.nav-link, .btn, .ctrl, .bio-btn, .contact-item a').forEach(el=>{
+      el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') el.click(); });
     });
 
-    // mobile fallback
+    // mobile fallback: scroll top on nav click when nav hidden
     qsa('.nav-link').forEach(a=>{
       a.addEventListener('click', ()=>{ if(window.innerWidth < 880){ window.scrollTo({top:0,behavior:'smooth'}); }});
     });
