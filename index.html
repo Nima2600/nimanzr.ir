@@ -8,7 +8,7 @@
   <style>
     :root{
       --bg:#1e1e2f;
-      --panel:#0d0f18;
+      --panel:#0d0f18; /* dashboard always dark */
       --card:#262732;
       --text:#e6eef8;
       --muted:#9aa4b2;
@@ -20,7 +20,7 @@
     }
     body.light{
       --bg:#f7f7fb;
-      --panel:#0d0f18; /* keep nav dark always */
+      /* keep nav/dash colors identical to dark (locked) */
       --card:#ffffff;
       --text:#16202a;
       --muted:#5b6770;
@@ -29,6 +29,7 @@
       --border:rgba(0,0,0,0.06);
       --shadow: rgba(11,15,30,0.03);
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -66,13 +67,13 @@
     /* tooltip */
     .ctrl[title]{ position:relative }
     .ctrl[title]:hover::after{
-      content:attr(title); position:absolute; white-space:nowrap; bottom:-36px;
+      content:attr(title); position:absolute; white-space:nowrap; bottom:-40px;
       background:var(--panel); color:var(--text); padding:6px 10px; border-radius:6px; font-size:13px;
       box-shadow:0 8px 20px rgba(0,0,0,0.5);
       transform:translateY(6px); opacity:1;
     }
 
-    /* layout */
+    /* layout / nav (dashboard) */
     nav{
       width:240px;
       background:linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02));
@@ -88,7 +89,9 @@
       color:var(--text);
       transition:all .18s ease;
     }
+    /* when LTR, place nav on left (order change) and flip border side */
     [dir="ltr"] nav{ order:-1; border-left:0; border-right:1px solid var(--border) }
+
     nav h2{ margin:0 0 6px 0;font-size:1.15rem;color:var(--accent); letter-spacing:.2px; }
     .nav-link{ display:block;padding:10px 12px;border-radius:8px;color:var(--text); text-decoration:none;font-weight:500;cursor:pointer; }
     .nav-link:hover{ background:rgba(255,255,255,0.02); color:var(--accent) }
@@ -121,18 +124,24 @@
     .skill-bar{ height:10px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:10px }
     .skill-level{ height:100%; background:linear-gradient(90deg,var(--accent-strong),var(--accent)); width:0; transition:width .6s ease }
 
-    /* contact: logo next to username, no textual network names */
+    /* contact: logos are links on web; hide textual usernames visually on web */
     .contact-list{ display:flex;flex-direction:column;gap:12px;margin-top:14px;align-items:flex-start }
     .contact-item{ display:flex;gap:12px;align-items:center }
     .contact-item a{ display:inline-flex;gap:12px;align-items:center;text-decoration:none;color:var(--text) }
     .logo{ width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--card); border:1px solid var(--border);color:var(--accent);flex:0 0 36px; }
     .contact-text{ color:var(--muted); font-weight:600; font-size:0.98rem }
 
-    /* biography button in nav */
-    .bio-btn{ display:block;padding:10px 12px;border-radius:8px;background:transparent;color:var(--text);border:1px solid var(--border);cursor:pointer;font-weight:600; text-align:center; }
+    /* hide username text in web (but keep for screen readers) */
+    .contact-text{ position:relative }
+    .contact-text.visual-hide{
+      border:0;padding:0;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;position:absolute;
+    }
 
-    /* print contact: show only plaintext usernames/phone centered */
+    /* print contact area: centered, each entry on its own line with logo + username */
     .print-contact{ display:none;font-size:0.98rem;color:var(--text);text-align:center;margin-top:14px }
+    .print-contact .line{ display:flex;align-items:center;gap:10px;justify-content:center;margin:8px 0 }
+    .print-contact svg{ width:18px;height:18px;vertical-align:middle }
+
     @media print{
       body{ background:#fff;color:#000 }
       nav,.controls{ display:none !important }
@@ -145,10 +154,8 @@
       /* center certs & skills */
       #certs .grid, #skills .grid{ justify-content:center }
       .card{ margin:0 6px }
+      footer{ display:none }
     }
-
-    /* hide any main-level footer (we removed it) */
-    footer{ display:none }
 
     /* responsive */
     @media (max-width:880px){
@@ -163,7 +170,7 @@
 
   <div class="controls" aria-hidden="false">
     <button class="ctrl small" id="printCtrl" title="چاپ" aria-label="Print">
-      <!-- clearer, larger printer SVG -->
+      <!-- clear printer SVG (visually unambiguous printer icon) -->
       <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false">
         <path d="M19 8H5a1 1 0 00-1 1v6h3v3h10v-3h3V9a1 1 0 00-1-1zM7 18v-3h10v3H7zM17 4H7v3h10V4z"/>
       </svg>
@@ -184,8 +191,6 @@
     <a class="nav-link" data-target="certs">مدارک</a>
     <a class="nav-link" data-target="skills">مهارت‌ها</a>
     <a class="nav-link" data-target="contact">تماس</a>
-
-    <button class="bio-btn" id="openBio">زندگی‌نامه</button>
 
     <div class="nav-actions">
       <div style="height:6px"></div>
@@ -211,10 +216,8 @@
       </header>
 
       <p style="margin-top:18px;color:var(--muted)">خلاصه‌ای کوتاه درباره‌ی نیما. اینجا می‌تونی یک خط درباره تجربه و تخصص‌هات بنویسی ــ مختصر و حرفه‌ای.</p>
-    </section>
 
-    <section id="bio" aria-labelledby="bio">
-      <h2>زندگی‌نامه</h2>
+      <h2 style="margin-top:22px;color:var(--accent)">زندگی‌نامه</h2>
       <p style="color:var(--muted)">نیما نظری، مهندس شبکه با تجربه در طراحی، پیاده‌سازی و عیب‌یابی شبکه‌های متوسط تا بزرگ. علاقه‌مند به تحلیل ترافیک، امن‌سازی لایه‌های شبکه و استفاده از ابزارهای Open Source برای اتوماسیون و مانیتورینگ.</p>
     </section>
 
@@ -245,39 +248,58 @@
 
     <section id="contact" aria-labelledby="contact">
       <h2>تماس با من</h2>
-      <p style="color:var(--muted)">لوگوها کنار یوزرنیم‌ها قرار می‌گیرند؛ در چاپ فقط یوزرنیم‌ها و شماره تلفن نمایش داده می‌شوند.</p>
+      <p style="color:var(--muted)">لوگوها لینک دارند و در صفحه وب فقط لوگو نمایش داده می‌شود. در چاپ هر خط شامل لوگو و یوزرنیم خواهد بود و همهٔ خطوط وسط‌چین می‌شوند.</p>
 
+      <!-- Web: logos are links; text visually hidden but present for screen readers -->
       <div class="contact-list" aria-hidden="false">
         <div class="contact-item">
           <a href="https://wa.me/989000000000" target="_blank" aria-label="واتس‌اپ">
             <span class="logo" aria-hidden="true">
+              <!-- WhatsApp SVG -->
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
             </span>
-            <span class="contact-text">09000000000</span>
+            <span class="contact-text visual-hide">09000000000</span>
           </a>
         </div>
 
         <div class="contact-item">
           <a href="https://t.me/username" target="_blank" aria-label="تلگرام">
             <span class="logo" aria-hidden="true">
+              <!-- Telegram SVG -->
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
             </span>
-            <span class="contact-text">@username</span>
+            <span class="contact-text visual-hide">@username</span>
           </a>
         </div>
 
         <div class="contact-item">
           <a href="https://instagram.com/username" target="_blank" aria-label="اینستاگرام">
             <span class="logo" aria-hidden="true">
+              <!-- Instagram SVG -->
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
             </span>
-            <span class="contact-text">@username</span>
+            <span class="contact-text visual-hide">@username</span>
           </a>
         </div>
       </div>
 
+      <!-- Print: each entry on its own centered line with logo + username -->
       <div class="print-contact" aria-hidden="false">
-        09000000000  |  @username  |  @username
+        <div class="line">
+          <!-- WhatsApp SVG (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
+          <span>09000000000</span>
+        </div>
+        <div class="line">
+          <!-- Telegram SVG (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
+          <span>@username</span>
+        </div>
+        <div class="line">
+          <!-- Instagram SVG (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
+          <span>@username</span>
+        </div>
       </div>
     </section>
   </main>
@@ -288,7 +310,7 @@
     const year = new Date().getFullYear();
     qs('#yearNav').textContent = year;
 
-    // navigation
+    // Navigation links
     qsa('.nav-link').forEach(a=>{
       a.addEventListener('click', ()=>{
         const t = a.getAttribute('data-target');
@@ -299,35 +321,23 @@
       });
     });
 
-    // biography button (nav)
-    qs('#openBio').addEventListener('click', ()=>{
-      qsa('section').forEach(sec=>sec.classList.remove('active'));
-      qs('#bio').classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
-    });
-
-    // print control
+    // Print control: ensure all sections visible for print
     qs('#printCtrl').addEventListener('click', ()=>{
-      // ensure all sections visible for print
       qsa('section').forEach(s=>s.classList.add('active'));
       setTimeout(()=>window.print(), 120);
     });
 
-    // theme: affect content but keep nav dark
+    // Theme: main/card colors change; nav locked to dark (no change)
     function setTheme(light){
       document.body.classList.toggle('light', !!light);
-      // ensure nav background keeps dark appearance
+      // force nav to dark appearance by overriding any theme changes
       const nav = qs('nav');
-      if(document.body.classList.contains('light')){
-        nav.style.background = 'linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02))';
-      } else {
-        nav.style.background = '';
-      }
+      nav.style.background = 'linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02))';
     }
     qs('#themeCtrl').addEventListener('click', ()=> setTheme(!document.body.classList.contains('light')));
     setTheme(false);
 
-    // language switching: full-site translation + dir + nav side
+    // Language switching: full translations + dir + nav side + controls position + aria-labels
     function setLang(lang){
       if(lang === 'en'){
         document.body.dataset.lang = 'en';
@@ -339,16 +349,15 @@
         qs('#navTitle').textContent = 'Menu';
         qs('#fullName').textContent = 'Nima Nazari';
         qs('#subtitle').textContent = 'Network Engineer & Developer';
-        qs('#openBio').textContent = 'Biography';
         qs('#yearNav').parentElement.innerHTML = `© ${year} Nima Nazari`;
         // section headings
-        qs('#about h2')?.remove?.();
+        // About section has H2 "Biography" already placed under About in DOM, translate:
+        qs('#about h2')?.remove?.(); // ensure no duplicate if present
+        // set other section headings
         qs('#certs h2').textContent = 'Certificates';
         qs('#skills h2').textContent = 'Skills & Tools';
         qs('#contact h2').textContent = 'Contact';
-        // controls position handled by CSS via [dir="ltr"]
-        qs('#langCtrl').textContent = 'EN';
-        // ARIA
+        // ARIA and titles
         qsa('.contact-item a').forEach((a,i)=>{
           if(i===0) a.setAttribute('aria-label','WhatsApp');
           if(i===1) a.setAttribute('aria-label','Telegram');
@@ -356,6 +365,7 @@
         });
         qs('#printCtrl').setAttribute('title','Print');
         qs('#themeCtrl').setAttribute('title','Toggle theme');
+        qs('#langCtrl').textContent = 'EN';
       } else {
         document.body.dataset.lang = 'fa';
         document.documentElement.lang = 'fa';
@@ -365,7 +375,6 @@
         qs('#navTitle').textContent = 'منو';
         qs('#fullName').textContent = 'نیما نظری';
         qs('#subtitle').textContent = 'مهندس شبکه و توسعه‌دهنده';
-        qs('#openBio').textContent = 'زندگی‌نامه';
         qs('#yearNav').parentElement.innerHTML = `© ${year} نیما نظری`;
         qs('#certs h2').textContent = 'مدارک و گواهینامه‌ها';
         qs('#skills h2').textContent = 'نرم‌افزارها و دوره‌های تخصصی';
@@ -379,13 +388,13 @@
         qs('#themeCtrl').setAttribute('title','تغییر حالت');
         qs('#langCtrl').textContent = 'FA';
       }
-      // reposition nav for LTR/RTL handled by CSS; ensure layout updates
+      // ensure layout recalculation so CSS [dir="ltr"] rules apply
       setTimeout(()=>window.dispatchEvent(new Event('resize')), 50);
     }
     qs('#langCtrl').addEventListener('click', ()=> setLang(document.body.dataset.lang === 'fa' ? 'en' : 'fa'));
     setLang('fa');
 
-    // animate skill bars
+    // Animate skill bars
     function animateSkills(){
       qsa('.skill-level').forEach(el=>{
         const v = el.getAttribute('data-level') || 60;
@@ -394,12 +403,12 @@
     }
     window.addEventListener('load', animateSkills);
 
-    // keyboard accessibility
-    qsa('.nav-link, .btn, .ctrl, .bio-btn, .contact-item a').forEach(el=>{
+    // Accessibility: allow Enter/Space to activate controls
+    qsa('.nav-link, .btn, .ctrl, .contact-item a').forEach(el=>{
       el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') el.click(); });
     });
 
-    // mobile fallback: scroll top on nav click when nav hidden
+    // Mobile fallback: scroll top when selecting nav item
     qsa('.nav-link').forEach(a=>{
       a.addEventListener('click', ()=>{ if(window.innerWidth < 880){ window.scrollTo({top:0,behavior:'smooth'}); }});
     });
