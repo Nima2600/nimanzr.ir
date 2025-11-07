@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <title>نیما نظری | مهندس شبکه</title>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
@@ -20,56 +20,60 @@
       --nav-width:260px;
     }
 
+    /* Base reset */
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{height:100%; margin:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;}
     body{
-      margin:0;
-      min-height:100%;
       font-family:"Vazirmatn", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background:var(--bg);
       color:var(--text);
       direction:rtl;
+      min-height:100vh;
       display:flex;
       gap:24px;
       transition:background .25s ease,color .25s ease,transform .28s ease;
+      overflow-x:hidden; /* prevent accidental horizontal scroll on mobile */
     }
 
-    /* controls */
+    /* Controls */
     .controls{
       position:fixed;
-      top:14px;
-      left:14px;
+      top:12px;
+      left:12px;
       display:flex;
       gap:10px;
-      z-index:1600; /* بالا بردن z-index تا همیشه روی محتوا باشد */
+      z-index:1600;
     }
     .ctrl{
-      width:var(--ctrl-size);height:var(--ctrl-size);border-radius:10px;
-      display:inline-grid;place-items:center;
-      background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;
-      box-shadow:0 8px 22px var(--shadow);transition:transform .12s ease,background .18s,box-shadow .12s;
+      width:var(--ctrl-size);
+      height:var(--ctrl-size);
+      border-radius:10px;
+      display:inline-grid;
+      place-items:center;
+      background:var(--card);
+      color:var(--text);
+      border:1px solid var(--border);
+      cursor:pointer;
+      box-shadow:0 8px 22px var(--shadow);
+      transition:transform .12s ease,background .18s,box-shadow .12s;
       position:relative;
-      overflow:visible;
     }
     .ctrl:active{ transform:scale(.97) }
 
-    /* printer button frame */
+    /* printer + hamburger compact frame */
     .ctrl.small{
-      width:48px;
-      height:48px;
-      border-radius:12px;
-      padding:8px;
+      width:44px;
+      height:44px;
+      padding:6px;
+      border-radius:10px;
       display:inline-grid;
       place-items:center;
-      border:1px solid rgba(255,255,255,0.06);
       background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+      border:1px solid rgba(255,255,255,0.06);
     }
-    .ctrl.small:focus{ box-shadow:0 10px 26px rgba(124,58,237,0.12); outline:none; }
-
-    .ctrl.small svg{ width:24px; height:24px; display:block; color:currentColor; stroke:currentColor; fill:none; }
+    .ctrl.small svg{ width:22px; height:22px; display:block; color:currentColor; stroke:currentColor; fill:none; }
     .ctrl.small svg .paper{ transform-origin:center; transform:scale(0.95); }
 
-    /* tooltip */
     .ctrl .tooltip{
       position:absolute;
       top:calc(100% + 8px);
@@ -85,7 +89,6 @@
       opacity:0;
       pointer-events:none;
       transition:opacity .12s ease,transform .12s ease;
-      transform-origin:50% 0%;
       z-index:1200;
     }
     .ctrl:focus .tooltip,
@@ -95,8 +98,6 @@
       transform:translateX(-50%) translateY(0);
       pointer-events:auto;
     }
-
-    .ctrl svg{ color:var(--text); }
 
     nav{
       width:var(--nav-width);
@@ -117,22 +118,13 @@
     nav h2{ margin:0 0 6px 0;font-size:1.15rem;color:var(--accent); letter-spacing:.2px; }
     .nav-link{ display:block;padding:10px 12px;border-radius:8px;color:var(--text); text-decoration:none;font-weight:500;cursor:pointer; }
     .nav-link:hover{ background:rgba(255,255,255,0.02); color:var(--accent) }
-    .nav-actions{ margin-top:auto; display:flex;flex-direction:column; gap:10px }
 
-    .nav-footer{
-      text-align:center;
-      color:var(--accent);
-      width:100%;
-      padding:8px 0;
-      font-weight:600;
-      display:block;
-      margin-top:6px;
-    }
-
-    main{ flex:1;padding:34px; max-width:980px; margin-bottom:40px; transition:margin .18s ease,transform .28s ease; }
+    main{ flex:1;padding:34px; max-width:980px; margin-bottom:40px; transition:margin .18s ease,transform .28s ease; min-width:0; }
 
     section{ display:none }
     section.active{ display:block }
+
+    /* header / profile */
     header.profile{
       display:flex;gap:18px;align-items:center;justify-content:space-between;
       background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
@@ -140,124 +132,84 @@
     }
     .profile-left{ display:flex;gap:14px;align-items:center }
     .avatar{ width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-strong)); display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.1rem; box-shadow:0 8px 30px rgba(124,58,237,0.14); }
-    .profile-meta h1{ margin:0;font-size:1.6rem }
-    .profile-meta p{ margin:6px 0 0 0;color:var(--muted);font-size:0.95rem }
 
+    /* grids and cards */
     .grid{ display:flex;flex-wrap:wrap;gap:16px;margin-top:18px }
-    .card{ background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;width:220px;text-align:center;box-shadow:0 8px 20px var(--shadow); }
+    .card{ background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;width:220px;text-align:center;box-shadow:0 8px 20px var(--shadow); min-width:0; }
     .card img{ width:40px;height:40px;object-fit:contain;margin-bottom:10px }
-    .card p{ margin:0;font-weight:600 }
 
-    .skill-bar{ height:10px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:10px }
-    .skill-level{ height:100%; background:linear-gradient(90deg,var(--accent-strong),var(--accent)); width:0; transition:width .6s ease }
-
+    /* contact */
     .contact-list{ display:flex;flex-direction:row;gap:14px;margin-top:14px;justify-content:center;align-items:center;flex-wrap:wrap }
-    .contact-item{ display:flex;gap:8px;align-items:center }
-    .contact-item a{ display:inline-flex;gap:12px;align-items:center;text-decoration:none;color:var(--text) }
     .logo{ width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--card); border:1px solid var(--border);color:var(--accent);flex:0 0 36px; }
-    .contact-text{ color:var(--muted); font-weight:600; font-size:0.98rem }
 
-    .contact-text{ position:relative }
-    .contact-text.visual-hide{
-      border:0;padding:0;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;position:absolute;
-    }
-
-    .print-contact{ display:none;font-size:0.98rem;color:#000;text-align:center;margin-top:14px }
-    .print-contact .stack{ display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center; }
-    .print-contact .line{ display:flex;align-items:center;justify-content:center;gap:12px;white-space:nowrap; }
-    .print-contact .line .logo{ width:18px;height:18px;border-radius:4px;display:inline-grid;place-items:center;background:transparent;border:0;color:#000 }
-    .print-contact .line span.value{ color:#000; font-weight:600; font-size:0.98rem }
-
-    body.print-preview section{ display:block !important }
-    body.print-preview nav{ visibility:hidden }
-
-    /* mobile toggle base (hidden on desktop) */
+    /* mobile-specific fixes */
+    /* Key fixes:
+       - switch layout to block on small screens (avoid flex horizontal gaps causing overflow)
+       - move controls to top-right and ensure main gets top padding so titles not covered
+       - make nav off-canvas overlay from right with backdrop
+       - lock body scroll when nav open
+    */
     #navToggle{ display:none; }
-
-    /* hamburger visual */
-    #navToggle{
-      display:none;
-      background:transparent;
-      border:none;
-      padding:6px;
-      width:44px;
-      height:44px;
-      border-radius:10px;
-      color:var(--text);
-      cursor:pointer;
-      transition:background .18s ease, box-shadow .18s ease, transform .12s ease;
-      box-shadow: 0 8px 22px rgba(2,6,23,0.45);
-    }
-    #navToggle:hover,
-    #navToggle:focus{
-      background: linear-gradient(180deg, rgba(124,58,237,0.12), rgba(159,122,234,0.06));
-      color: var(--accent);
-      transform:translateY(-1px);
-      outline: none;
-    }
-    #navToggle svg g line{
-      stroke-width:2.4;
-      stroke: currentColor;
-      transition: transform .22s cubic-bezier(.2,.9,.2,1), opacity .18s ease;
-    }
-
-    /* backdrop */
-    .nav-backdrop{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.48);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .22s ease;
-      z-index:1090;
-    }
-    body.nav-open .nav-backdrop{ opacity:1; pointer-events:auto; }
+    .nav-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.48); opacity:0; pointer-events:none; transition:opacity .22s ease; z-index:1090; }
 
     @media (max-width:880px){
-      /* move controls to top-right for reachability */
-      .controls{ left:auto; right:12px; top:10px; gap:8px; z-index:1600; }
+      body{
+        display:block; /* prevents flex horizontal overflow and auto zoom issues */
+      }
 
-      /* ensure main content not covered by controls: add top padding equal to controls area */
-      /* 56px is controls height + comfortable margin; adjust if you change control size */
-      main{ padding: calc(18px + 56px) 18px 18px 18px; }
+      /* controls: top-right reachable area */
+      .controls{
+        left:auto;
+        right:12px;
+        top:10px;
+        gap:8px;
+        z-index:1700;
+      }
 
+      /* ensure main content is not covered by controls */
+      /* controls height ~48 + margin -> add comfortable top padding */
+      main{ padding: calc(18px + 64px) 16px 20px 16px; max-width:100%; }
+
+      /* show toggle */
       #navToggle{ display:inline-grid; place-items:center; }
 
+      /* hamburger & print sizing */
+      .ctrl.small{ width:48px; height:48px; padding:8px; border-radius:12px; }
+      #navToggle{ width:48px; height:48px; padding:8px; border-radius:12px; }
+
+      /* off-canvas nav from right */
       nav{
         width:100%;
         max-width:420px;
-        right:0; left:auto;
+        position:fixed;
+        top:0;
+        bottom:0;
+        right:0;
+        left:auto;
         transform:translateX(110%);
         box-shadow: -8px 0 32px rgba(2,6,23,0.5);
         border-left:0;
         border-right:1px solid rgba(255,255,255,0.03);
         padding:28px 20px;
         z-index:1105;
-        position:fixed;
-        top:0;
-        bottom:0;
       }
       body.nav-open nav{ transform:translateX(0); }
 
-      .ctrl.small{ width:48px; height:48px; padding:8px; border-radius:12px; }
-      #navToggle{ width:48px; height:48px; padding:8px; border-radius:12px; }
+      /* backdrop visible when nav open */
+      body.nav-open .nav-backdrop{ opacity:1; pointer-events:auto; }
 
-      #navToggle .h1, #navToggle .h2, #navToggle .h3{
-        transition: transform .18s ease, opacity .12s ease;
-        transform-origin:center;
-      }
-      body.nav-open #navToggle .h1{ transform: translateY(6px) rotate(45deg); }
-      body.nav-open #navToggle .h2{ opacity:0; transform: scaleX(0.5); }
-      body.nav-open #navToggle .h3{ transform: translateY(-6px) rotate(-45deg); }
+      /* nav links larger tap targets */
+      nav .nav-link{ font-size:1.06rem; padding:14px 12px; margin-bottom:8px; border-radius:10px; }
 
-      nav .nav-link{ font-size:1.05rem; padding:14px 12px; margin-bottom:8px; border-radius:10px; }
+      /* ensure no horizontal scroll due to cards */
+      .card{ width:calc(50% - 12px); min-width:0; }
+      .grid{ gap:12px; }
 
-      /* overlay behavior (don't shift main) */
-      body.nav-open main{ transform:none; }
-
+      /* tooltip adjustment */
       .ctrl .tooltip{ left:auto; right:50%; transform:translateX(50%); max-width:180px; word-break:keep-all; }
     }
 
+    /* Print rules */
     @media print{
       *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       body, body *{ color: #000 !important; background: transparent !important; }
@@ -266,17 +218,6 @@
       nav,.controls,.nav-backdrop{ display:none !important }
       main{ padding:0 }
       section{ display:block !important }
-      .print-contact{ display:block }
-      .contact-list{ display:none }
-      .card{ box-shadow:none;border:1px solid #ddd;background:transparent }
-      .avatar{ display:none }
-      .card{ margin:0 6px }
-      footer{ display:none }
-      #about, #bio, #contact { break-inside: avoid; page-break-inside: avoid; }
-      #certs{ break-before: page; page-break-before: always; }
-      #certs{ break-after: auto; page-break-after: auto; }
-      #skills{ break-before: auto; page-break-before: auto; }
-      .nav-footer{ color: #000 !important; }
     }
   </style>
 </head>
@@ -299,7 +240,6 @@
 
     <!-- Print button -->
     <button class="ctrl small" id="printCtrl" title="چاپ" aria-label="چاپ" type="button">
-      <!-- printer icon (feet removed) -->
       <svg viewBox="0 0 24 24" role="img" aria-hidden="false" focusable="false" xmlns="http://www.w3.org/2000/svg">
         <rect x="3" y="6" width="18" height="5" rx="1" ry="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
         <rect x="7" y="2" width="10" height="5" rx="0.6" ry="0.6" stroke="currentColor" stroke-width="1.2" fill="none"/>
@@ -313,15 +253,13 @@
   </div>
 
   <nav aria-label="ناوبری" id="mainNav">
-    <h2 id="navTitle"></h2>
+    <h2 id="navTitle">منو</h2>
     <a class="nav-link" data-target="about">درباره من</a>
     <a class="nav-link" data-target="bio">زندگی‌نامه</a>
     <a class="nav-link" data-target="certs">مدارک</a>
     <a class="nav-link" data-target="skills">مهارت‌ها</a>
     <a class="nav-link" data-target="contact">تماس</a>
-
     <div class="nav-actions"></div>
-
     <div class="nav-footer" id="navFooter">© <span id="yearNav"></span> نیما نظری</div>
   </nav>
 
@@ -336,8 +274,8 @@
           </div>
         </div>
         <div style="text-align:left;min-width:200px">
-          <div style="color:var(--muted);font-size:0.95rem">ساخته شده توسط:</div>
-          <div style="margin-top:6px;font-weight:600;color:var(--accent)">Microsoft Copilot</div>
+          <div style="color:var(--muted);font-size:0.95rem">برای دمو</div>
+          <div style="margin-top:6px;font-weight:600;color:var(--accent)">nimazr.ir</div>
         </div>
       </header>
 
@@ -354,104 +292,20 @@
       <h2 id="contact-title">تماس با من</h2>
       <p style="color:var(--muted)">لوگوها لینک دارند و در صفحهٔ وب به‌صورت افقی و وسط‌چین نمایش داده می‌شوند. در چاپ هر لینک در یک خط جدا قرار می‌گیرد و مقدار متنی بین دو لوگو مربوطه محاط می‌شود.</p>
 
-      <div class="contact-list" aria-hidden="false" role="list">
+      <div class="contact-list" role="list">
         <div class="contact-item" role="listitem">
           <a href="mailto:info@example.com" title="ایمیل" aria-label="ایمیل">
             <span class="logo" aria-hidden="true" title="ایمیل">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v11A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5v-11zM5.5 6L12 10.2 18.5 6"/></svg>
             </span>
-            <span class="contact-text visual-hide">info@example.com</span>
           </a>
         </div>
-
         <div class="contact-item" role="listitem">
           <a href="tel:+989000000000" title="تلفن" aria-label="تلفن">
             <span class="logo" aria-hidden="true" title="تلفن">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M22 16.9v3a1 1 0 01-1.1 1 19 19 0 01-8.2-3.2 19 19 0 01-5-5A19 19 0 013 3.1 1 1 0 014 2h3a1 1 0 01.9.7l1.2 4a1 1 0 01-.3 1l-1.4 1.4a12 12 0 005 5l1.4-1.4a1 1 0 011-.3l4 1.2a1 1 0 01.7.9z"/></svg>
             </span>
-            <span class="contact-text visual-hide">+98 900 000 0000</span>
           </a>
-        </div>
-
-        <div class="contact-item" role="listitem">
-          <a href="https://wa.me/989000000000" target="_blank" rel="noopener" title="واتس‌اپ" aria-label="واتس‌اپ">
-            <span class="logo" aria-hidden="true" title="واتس‌اپ">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
-            </span>
-            <span class="contact-text visual-hide">09000000000</span>
-          </a>
-        </div>
-
-        <div class="contact-item" role="listitem">
-          <a href="https://t.me/username" target="_blank" rel="noopener" title="تلگرام" aria-label="تلگرام">
-            <span class="logo" aria-hidden="true" title="تلگرام">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
-            </span>
-            <span class="contact-text visual-hide">@username</span>
-          </a>
-        </div>
-
-        <div class="contact-item" role="listitem">
-          <a href="https://instagram.com/username" target="_blank" rel="noopener" title="اینستاگرام" aria-label="اینستاگرام">
-            <span class="logo" aria-hidden="true" title="اینستاگرام">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
-            </span>
-            <span class="contact-text visual-hide">@username</span>
-          </a>
-        </div>
-      </div>
-
-      <div class="print-contact" aria-hidden="false">
-        <div class="stack" role="group" aria-label="اطلاعات تماس برای چاپ">
-          <div class="line" role="article" aria-label="ایمیل">
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v11A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5v-11zM5.5 6L12 10.2 18.5 6"/></svg>
-            </span>
-            <span class="value">info@example.com</span>
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v11A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5v-11zM5.5 6L12 10.2 18.5 6"/></svg>
-            </span>
-          </div>
-
-          <div class="line" role="article" aria-label="تلفن">
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M22 16.9v3a1 1 0 01-1.1 1 19 19 0 01-8.2-3.2 19 19 0 01-5-5A19 19 0 013 3.1 1 1 0 014 2h3a1 1 0 01.9.7l1.2 4a1 1 0 01-.3 1l-1.4 1.4a12 12 0 005 5l1.4-1.4a1 1 0 011-.3l4 1.2a1 1 0 01.7.9z"/></svg>
-            </span>
-            <span class="value">+98 900 000 0000</span>
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M22 16.9v3a1 1 0 01-1.1 1 19 19 0 01-8.2-3.2 19 19 0 01-5-5A19 19 0 013 3.1 1 1 0 014 2h3a1 1 0 01.9.7l1.2 4a1 1 0 01-.3 1l-1.4 1.4a12 12 0 005 5l1.4-1.4a1 1 0 011-.3l4 1.2a1 1 0 01.7.9z"/></svg>
-            </span>
-          </div>
-
-          <div class="line" role="article" aria-label="واتس‌اپ">
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
-            </span>
-            <span class="value">09000000000</span>
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
-            </span>
-          </div>
-
-          <div class="line" role="article" aria-label="تلگرام">
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
-            </span>
-            <span class="value">@username</span>
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
-            </span>
-          </div>
-
-          <div class="line" role="article" aria-label="اینستاگرام">
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
-            </span>
-            <span class="value">@username</span>
-            <span class="logo" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" focusable="false" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
-            </span>
-          </div>
         </div>
       </div>
     </section>
@@ -485,10 +339,9 @@
   <script>
     const qs = s => document.querySelector(s);
     const qsa = s => Array.from(document.querySelectorAll(s));
-    const year = new Date().getFullYear();
-    qs('#yearNav').textContent = year;
+    qs('#yearNav') && (qs('#yearNav').textContent = new Date().getFullYear());
 
-    // Navigation links
+    // Basic navigation
     qsa('.nav-link').forEach(a=>{
       a.addEventListener('click', ()=>{
         const t = a.getAttribute('data-target');
@@ -500,7 +353,7 @@
       });
     });
 
-    // skill animation
+    // Skill bars
     function animateSkills(){
       qsa('.skill-level').forEach(el=>{
         const v = el.getAttribute('data-level') || 60;
@@ -509,12 +362,12 @@
     }
     window.addEventListener('load', animateSkills);
 
-    // keyboard activation
-    qsa('.nav-link, .btn, .ctrl, .contact-item a').forEach(el=>{
-      el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') el.click(); });
+    // Accessible activation
+    qsa('.nav-link, .ctrl, .contact-item a').forEach(el=>{
+      el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
     });
 
-    // Mobile nav toggle & backdrop & scroll-lock logic
+    // Mobile nav: toggle, backdrop, scroll lock
     (function(){
       const navToggle = document.getElementById('navToggle');
       const bodyEl = document.body;
@@ -538,24 +391,24 @@
 
       function openNav(){
         bodyEl.classList.add('nav-open');
-        navToggle.setAttribute('aria-expanded','true');
-        navBackdrop.setAttribute('aria-hidden','false');
+        navToggle && navToggle.setAttribute('aria-expanded','true');
+        navBackdrop && navBackdrop.setAttribute('aria-hidden','false');
         lockScroll();
-        const first = mainNav.querySelector('.nav-link');
+        const first = mainNav && mainNav.querySelector('.nav-link');
         if(first) first.focus();
       }
       function closeNav(){
         bodyEl.classList.remove('nav-open');
-        navToggle.setAttribute('aria-expanded','false');
-        navBackdrop.setAttribute('aria-hidden','true');
+        navToggle && navToggle.setAttribute('aria-expanded','false');
+        navBackdrop && navBackdrop.setAttribute('aria-hidden','true');
         unlockScroll();
-        navToggle.focus();
+        navToggle && navToggle.focus();
       }
       function closeNavImmediate(){
         if(bodyEl.classList.contains('nav-open')){
           bodyEl.classList.remove('nav-open');
-          navToggle.setAttribute('aria-expanded','false');
-          navBackdrop.setAttribute('aria-hidden','true');
+          navToggle && navToggle.setAttribute('aria-expanded','false');
+          navBackdrop && navBackdrop.setAttribute('aria-hidden','true');
           unlockScroll();
         }
       }
@@ -565,30 +418,21 @@
           if(bodyEl.classList.contains('nav-open')) closeNav(); else openNav();
         });
       }
+      if(navBackdrop) navBackdrop.addEventListener('click', closeNav);
 
-      if(navBackdrop){
-        navBackdrop.addEventListener('click', closeNav);
-      }
-
-      // close with Escape
       document.addEventListener('keydown', (e)=>{
-        if(e.key === 'Escape' && bodyEl.classList.contains('nav-open')){
-          closeNav();
-        }
+        if(e.key === 'Escape' && bodyEl.classList.contains('nav-open')) closeNav();
       });
 
-      // ensure no stuck state on resize
       window.addEventListener('resize', ()=>{ if(window.innerWidth > 880 && bodyEl.classList.contains('nav-open')) closeNavImmediate(); });
 
-      // expose for use in other handlers
       window.closeNavImmediate = closeNavImmediate;
     })();
 
-    // Print preview handling
+    // Print preview handling (robust)
     (function(){
       let savedActive = null;
       let savedScroll = { x:0, y:0 };
-      let mql = null;
       const body = document.body;
 
       function enterPrintPreview(){
@@ -601,7 +445,6 @@
           if(el) el.classList.add('active');
         });
       }
-
       function exitPrintPreview(){
         body.classList.remove('print-preview');
         qsa('section').forEach(sec=>sec.classList.remove('active'));
@@ -624,32 +467,16 @@
         });
       }
 
-      function onBeforePrint(){
-        if(!body.classList.contains('print-preview')) enterPrintPreview();
-      }
-      function onAfterPrint(){
-        exitPrintPreview();
-      }
+      function onBeforePrint(){ if(!body.classList.contains('print-preview')) enterPrintPreview(); }
+      function onAfterPrint(){ exitPrintPreview(); }
 
       if ('onbeforeprint' in window){
         window.addEventListener('beforeprint', onBeforePrint);
         window.addEventListener('afterprint', onAfterPrint);
       } else if (window.matchMedia){
-        mql = window.matchMedia('print');
-        mql.addListener((m)=>{
-          if(m.matches) onBeforePrint(); else onAfterPrint();
-        });
-      } else {
-        window.addEventListener('focus', ()=>{
-          setTimeout(()=>{ if(body.classList.contains('print-preview')) exitPrintPreview(); }, 120);
-        });
+        const mql = window.matchMedia('print');
+        mql.addListener((m)=>{ if(m.matches) onBeforePrint(); else onAfterPrint(); });
       }
-
-      window.addEventListener('visibilitychange', ()=>{
-        if(document.visibilityState === 'visible' && body.classList.contains('print-preview')){
-          setTimeout(()=>{ if(body.classList.contains('print-preview')) exitPrintPreview(); }, 200);
-        }
-      });
     })();
   </script>
 </body>
