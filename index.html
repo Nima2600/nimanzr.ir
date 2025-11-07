@@ -72,6 +72,17 @@
     .nav-link:hover{ background:rgba(255,255,255,0.02); color:var(--accent) }
     .nav-actions{ margin-top:auto; display:flex;flex-direction:column; gap:10px }
 
+    /* nav footer: centered and themed */
+    .nav-footer{
+      text-align:center;
+      color:var(--accent);
+      width:100%;
+      padding:8px 0;
+      font-weight:600;
+      display:block;
+      margin-top:6px;
+    }
+
     main{ flex:1;padding:34px; max-width:980px; margin-bottom:40px; transition:margin .18s ease; }
 
     section{ display:none }
@@ -141,6 +152,9 @@
       /* Skills follow naturally after certs on page 2 */
       #certs{ break-after: auto; page-break-after: auto; }
       #skills{ break-before: auto; page-break-before: auto; }
+
+      /* Ensure nav-footer color override in print (black) */
+      .nav-footer{ color: #000 !important; }
     }
 
     @media (max-width:880px){
@@ -393,9 +407,6 @@
           const el = document.getElementById(id);
           if(el) el.classList.add('active');
         });
-
-        // small timeout to allow layout to stabilize before print dialog opens
-        // (we rely on browser's print to use @media print, but preview class helps before print)
       }
 
       function exitPrintPreview(){
@@ -408,7 +419,6 @@
           const restore = document.getElementById(savedActive);
           if(restore) restore.classList.add('active');
         } else {
-          // fallback: show about
           const about = document.getElementById('about');
           if(about) about.classList.add('active');
         }
@@ -425,19 +435,15 @@
       if(printBtn){
         printBtn.addEventListener('click', ()=>{
           enterPrintPreview();
-          // use a small timeout to allow the visual change to apply, then open print
           setTimeout(()=>{ window.print(); }, 120);
         });
       }
 
       // Use beforeprint/afterprint where available
       function onBeforePrint(){
-        // browsers that call this will still have preview already added by click path,
-        // but ensure state is set in any case
         if(!body.classList.contains('print-preview')) enterPrintPreview();
       }
       function onAfterPrint(){
-        // restore state
         exitPrintPreview();
       }
 
@@ -450,17 +456,13 @@
           if(m.matches) onBeforePrint(); else onAfterPrint();
         });
       } else {
-        // fallback: try to restore on focus after print dialog (best-effort)
         window.addEventListener('focus', ()=>{
-          // slight delay to ensure print dialog closed
           setTimeout(()=>{ if(body.classList.contains('print-preview')) exitPrintPreview(); }, 120);
         });
       }
 
-      // Defensive: if user navigates away or reloads, ensure preview class not stuck
       window.addEventListener('visibilitychange', ()=>{
         if(document.visibilityState === 'visible' && body.classList.contains('print-preview')){
-          // give a moment, then clear
           setTimeout(()=>{ if(body.classList.contains('print-preview')) exitPrintPreview(); }, 200);
         }
       });
