@@ -8,7 +8,7 @@
   <style>
     :root{
       --bg:#1e1e2f;
-      --panel:#0d0f18; /* dashboard always dark */
+      --panel:#0d0f18; /* dashboard always dark (locked) */
       --card:#262732;
       --text:#e6eef8;
       --muted:#9aa4b2;
@@ -17,17 +17,6 @@
       --border:rgba(255,255,255,0.06);
       --shadow: rgba(2,6,23,0.6);
       --ctrl-size:42px;
-    }
-    body.light{
-      --bg:#f7f7fb;
-      /* keep nav/dash colors identical to dark (locked) */
-      --card:#ffffff;
-      --text:#16202a;
-      --muted:#5b6770;
-      --accent:#7c63d9;
-      --accent-strong:#5b2bd6;
-      --border:rgba(0,0,0,0.06);
-      --shadow: rgba(11,15,30,0.03);
     }
 
     *{box-sizing:border-box}
@@ -44,7 +33,7 @@
       transition:background .25s ease,color .25s ease;
     }
 
-    /* top controls */
+    /* controls (only print remains) */
     .controls{
       position:fixed;
       top:14px;
@@ -53,7 +42,6 @@
       gap:10px;
       z-index:999;
     }
-    [dir="ltr"] .controls{ left:auto; right:14px }
     .ctrl{
       width:var(--ctrl-size);height:var(--ctrl-size);border-radius:10px;
       display:inline-grid;place-items:center;
@@ -62,16 +50,6 @@
     }
     .ctrl:active{ transform:scale(.97) }
     .ctrl.small{ width:36px;height:36px;border-radius:50% }
-    .ctrl.lang{ background:transparent;color:var(--accent); border:2px solid var(--accent); font-weight:700; padding:6px 10px; }
-
-    /* tooltip */
-    .ctrl[title]{ position:relative }
-    .ctrl[title]:hover::after{
-      content:attr(title); position:absolute; white-space:nowrap; bottom:-40px;
-      background:var(--panel); color:var(--text); padding:6px 10px; border-radius:6px; font-size:13px;
-      box-shadow:0 8px 20px rgba(0,0,0,0.5);
-      transform:translateY(6px); opacity:1;
-    }
 
     /* layout / nav (dashboard) */
     nav{
@@ -89,8 +67,6 @@
       color:var(--text);
       transition:all .18s ease;
     }
-    /* when LTR, place nav on left (order change) and flip border side */
-    [dir="ltr"] nav{ order:-1; border-left:0; border-right:1px solid var(--border) }
 
     nav h2{ margin:0 0 6px 0;font-size:1.15rem;color:var(--accent); letter-spacing:.2px; }
     .nav-link{ display:block;padding:10px 12px;border-radius:8px;color:var(--text); text-decoration:none;font-weight:500;cursor:pointer; }
@@ -124,9 +100,9 @@
     .skill-bar{ height:10px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:10px }
     .skill-level{ height:100%; background:linear-gradient(90deg,var(--accent-strong),var(--accent)); width:0; transition:width .6s ease }
 
-    /* contact: logos are links on web; hide textual usernames visually on web */
-    .contact-list{ display:flex;flex-direction:column;gap:12px;margin-top:14px;align-items:flex-start }
-    .contact-item{ display:flex;gap:12px;align-items:center }
+    /* contact: logos are inline and centered on web */
+    .contact-list{ display:flex;flex-direction:row;gap:14px;margin-top:14px;justify-content:center;align-items:center;flex-wrap:wrap }
+    .contact-item{ display:flex;gap:8px;align-items:center }
     .contact-item a{ display:inline-flex;gap:12px;align-items:center;text-decoration:none;color:var(--text) }
     .logo{ width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--card); border:1px solid var(--border);color:var(--accent);flex:0 0 36px; }
     .contact-text{ color:var(--muted); font-weight:600; font-size:0.98rem }
@@ -143,7 +119,8 @@
     .print-contact svg{ width:18px;height:18px;vertical-align:middle }
 
     @media print{
-      body{ background:#fff;color:#000 }
+      /* base print styles */
+      body{ background:#fff;color:#000;direction:rtl }
       nav,.controls{ display:none !important }
       main{ padding:0 }
       section{ display:block !important }
@@ -155,6 +132,10 @@
       #certs .grid, #skills .grid{ justify-content:center }
       .card{ margin:0 6px }
       footer{ display:none }
+
+      /* ensure certs and skills each start on separate pages */
+      #certs{ break-before: page; page-break-before: always; break-after: page; page-break-after: always; }
+      #skills{ break-before: page; page-break-before: always; }
     }
 
     /* responsive */
@@ -169,39 +150,44 @@
 <body class="dark" dir="rtl" data-lang="fa">
 
   <div class="controls" aria-hidden="false">
-    <button class="ctrl small" id="printCtrl" title="چاپ" aria-label="Print">
-      <!-- clear printer SVG (visually unambiguous printer icon) -->
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false">
-        <path d="M19 8H5a1 1 0 00-1 1v6h3v3h10v-3h3V9a1 1 0 00-1-1zM7 18v-3h10v3H7zM17 4H7v3h10V4z"/>
+    <!-- Printer button using the user's requested clear black-and-white printer SVG -->
+    <button class="ctrl small" id="printCtrl" title="چاپ" aria-label="چاپ">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <title>پرینتر</title>
+        <rect x="3" y="7" width="18" height="8" rx="1.2" ry="1.2"></rect>
+        <rect x="7.2" y="2" width="9.6" height="6" rx="0.8" ry="0.8"></rect>
+        <line x1="8.5" y1="4.5" x2="15.5" y2="4.5" stroke-width="1.2" opacity="0.9"></line>
+        <rect x="9" y="3.6" width="6" height="3.6" fill="currentColor" opacity="0.06"></rect>
+        <rect x="9.6" y="1.6" width="4.8" height="3.4" rx="0.4" ry="0.4" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+        <line x1="10" y1="2.6" x2="14" y2="2.6" stroke-width="1.2"></line>
+        <line x1="10" y1="3.2" x2="14" y2="3.2" stroke-width="1.2"></line>
+        <line x1="10" y1="3.8" x2="12.8" y2="3.8" stroke-width="1.2"></line>
+        <rect x="5" y="14.2" width="14" height="4" rx="0.9" ry="0.9"></rect>
+        <circle cx="18" cy="11" r="0.85" fill="currentColor"></circle>
+        <circle cx="16" cy="11" r="0.85" fill="currentColor"></circle>
+        <line x1="7" y1="18.6" x2="7" y2="19.6" stroke-width="1.2"></line>
+        <line x1="17" y1="18.6" x2="17" y2="19.6" stroke-width="1.2"></line>
       </svg>
     </button>
-
-    <button class="ctrl small theme" id="themeCtrl" title="تغییر حالت" aria-label="Toggle theme">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-      </svg>
-    </button>
-
-    <button class="ctrl lang" id="langCtrl" title="FA / EN" aria-label="Toggle language">FA</button>
   </div>
 
   <nav aria-label="ناوبری">
     <h2 id="navTitle">منو</h2>
     <a class="nav-link" data-target="about">درباره من</a>
+    <a class="nav-link" data-target="bio">زندگی‌نامه</a>
     <a class="nav-link" data-target="certs">مدارک</a>
     <a class="nav-link" data-target="skills">مهارت‌ها</a>
     <a class="nav-link" data-target="contact">تماس</a>
 
-    <div class="nav-actions">
-      <div style="height:6px"></div>
-    </div>
+    <div class="nav-actions"></div>
 
     <div class="nav-footer" id="navFooter">© <span id="yearNav"></span> نیما نظری</div>
   </nav>
 
   <main>
-    <section id="about" class="active" aria-labelledby="about">
-      <header class="profile">
+    <!-- About (summary) -->
+    <section id="about" class="active" aria-labelledby="about-title">
+      <header class="profile" role="region" aria-labelledby="about-title">
         <div class="profile-left">
           <div class="avatar" aria-hidden="true">NN</div>
           <div class="profile-meta">
@@ -215,14 +201,19 @@
         </div>
       </header>
 
-      <p style="margin-top:18px;color:var(--muted)">خلاصه‌ای کوتاه درباره‌ی نیما. اینجا می‌تونی یک خط درباره تجربه و تخصص‌هات بنویسی ــ مختصر و حرفه‌ای.</p>
+      <h2 id="about-title" style="margin-top:12px;color:var(--accent)">درباره من</h2>
+      <p style="margin-top:12px;color:var(--muted)">خلاصه‌ای کوتاه درباره‌ی نیما. اینجا می‌تونی یک خط درباره تجربه و تخصص‌هات بنویسی ــ مختصر و حرفه‌ای.</p>
+    </section>
 
-      <h2 style="margin-top:22px;color:var(--accent)">زندگی‌نامه</h2>
+    <!-- Biography (separate) -->
+    <section id="bio" aria-labelledby="bio-title">
+      <h2 id="bio-title" style="color:var(--accent)">زندگی‌نامه</h2>
       <p style="color:var(--muted)">نیما نظری، مهندس شبکه با تجربه در طراحی، پیاده‌سازی و عیب‌یابی شبکه‌های متوسط تا بزرگ. علاقه‌مند به تحلیل ترافیک، امن‌سازی لایه‌های شبکه و استفاده از ابزارهای Open Source برای اتوماسیون و مانیتورینگ.</p>
     </section>
 
-    <section id="certs" aria-labelledby="certs">
-      <h2>مدارک و گواهینامه‌ها</h2>
+    <!-- Certificates -->
+    <section id="certs" aria-labelledby="certs-title">
+      <h2 id="certs-title">مدارک و گواهینامه‌ها</h2>
       <div class="grid" aria-hidden="false">
         <div class="card"><img src="logo-networkplus.png" alt="Network Plus"><p>Network+</p></div>
         <div class="card"><img src="logo-ccna.png" alt="CCNA"><p>CCNA</p></div>
@@ -230,8 +221,9 @@
       </div>
     </section>
 
-    <section id="skills" aria-labelledby="skills">
-      <h2>نرم‌افزارها و دوره‌های تخصصی</h2>
+    <!-- Skills -->
+    <section id="skills" aria-labelledby="skills-title">
+      <h2 id="skills-title">نرم‌افزارها و دوره‌های تخصصی</h2>
       <div class="grid">
         <div class="card">
           <img src="logo-wireshark.png" alt="Wireshark">
@@ -246,58 +238,81 @@
       </div>
     </section>
 
-    <section id="contact" aria-labelledby="contact">
-      <h2>تماس با من</h2>
-      <p style="color:var(--muted)">لوگوها لینک دارند و در صفحه وب فقط لوگو نمایش داده می‌شود. در چاپ هر خط شامل لوگو و یوزرنیم خواهد بود و همهٔ خطوط وسط‌چین می‌شوند.</p>
+    <!-- Contact: logos inline centered on web; print shows lines with logo + username -->
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">تماس با من</h2>
+      <p style="color:var(--muted)">لوگوها لینک دارند و در صفحهٔ وب به‌صورت افقی و وسط‌چین نمایش داده می‌شوند. در چاپ هر خط شامل لوگو و یوزرنیم خواهد بود و همهٔ خطوط وسط‌چین می‌شوند.</p>
 
-      <!-- Web: logos are links; text visually hidden but present for screen readers -->
-      <div class="contact-list" aria-hidden="false">
-        <div class="contact-item">
-          <a href="https://wa.me/989000000000" target="_blank" aria-label="واتس‌اپ">
-            <span class="logo" aria-hidden="true">
+      <!-- Web: logos inline and centered; username text visually hidden -->
+      <div class="contact-list" aria-hidden="false" role="list">
+        <div class="contact-item" role="listitem">
+          <a href="mailto:info@example.com" title="ایمیل" aria-label="ایمیل">
+            <span class="logo" aria-hidden="true" title="ایمیل">
+              <!-- email/envelope SVG -->
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true">
+                <path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v11A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5v-11zM5.5 6L12 10.2 18.5 6"/>
+              </svg>
+            </span>
+            <span class="contact-text visual-hide">info@example.com</span>
+          </a>
+        </div>
+
+        <div class="contact-item" role="listitem">
+          <a href="https://wa.me/989000000000" target="_blank" rel="noopener" title="واتس‌اپ" aria-label="واتس‌اپ">
+            <span class="logo" aria-hidden="true" title="واتس‌اپ">
               <!-- WhatsApp SVG -->
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
             </span>
             <span class="contact-text visual-hide">09000000000</span>
           </a>
         </div>
 
-        <div class="contact-item">
-          <a href="https://t.me/username" target="_blank" aria-label="تلگرام">
-            <span class="logo" aria-hidden="true">
+        <div class="contact-item" role="listitem">
+          <a href="https://t.me/username" target="_blank" rel="noopener" title="تلگرام" aria-label="تلگرام">
+            <span class="logo" aria-hidden="true" title="تلگرام">
               <!-- Telegram SVG -->
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
             </span>
             <span class="contact-text visual-hide">@username</span>
           </a>
         </div>
 
-        <div class="contact-item">
-          <a href="https://instagram.com/username" target="_blank" aria-label="اینستاگرام">
-            <span class="logo" aria-hidden="true">
+        <div class="contact-item" role="listitem">
+          <a href="https://instagram.com/username" target="_blank" rel="noopener" title="اینستاگرام" aria-label="اینستاگرام">
+            <span class="logo" aria-hidden="true" title="اینستاگرام">
               <!-- Instagram SVG -->
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
             </span>
             <span class="contact-text visual-hide">@username</span>
           </a>
         </div>
       </div>
 
-      <!-- Print: each entry on its own centered line with logo + username -->
+      <!-- Print: each entry in its own centered line with logo + username -->
       <div class="print-contact" aria-hidden="false">
         <div class="line">
-          <!-- WhatsApp SVG (print) -->
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
+          <!-- Email (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true">
+            <path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v11A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5v-11zM5.5 6L12 10.2 18.5 6"/>
+          </svg>
+          <span>info@example.com</span>
+        </div>
+
+        <div class="line">
+          <!-- WhatsApp (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M20.52 3.48A11.93 11.93 0 0012 .5 11.94 11.94 0 001.5 12c0 2.1.55 4.05 1.6 5.79L0 24l5.01-1.61A11.93 11.93 0 0012 23.5c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.02zM12 21.5a9.33 9.33 0 01-4.9-1.45l-.35-.22-3 1 1-3.33-.23-.34A9.28 9.28 0 012.7 12 9.3 9.3 0 1121.3 12 9.28 9.28 0 0112 21.5z"/></svg>
           <span>09000000000</span>
         </div>
+
         <div class="line">
-          <!-- Telegram SVG (print) -->
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
+          <!-- Telegram (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M21.7 3.3L2.8 11.1c-.8.3-.8 1 .1 1.2l4.1 1.1 1.1 4.1c.2.9 1 1 1.3.1L21.7 3.3z"/></svg>
           <span>@username</span>
         </div>
+
         <div class="line">
-          <!-- Instagram SVG (print) -->
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
+          <!-- Instagram (print) -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.1A3.9 3.9 0 1015.9 12 3.9 3.9 0 0012 8.1zm4.5-2.6a1.1 1.1 0 11-1.1 1.1 1.1 1.1 0 011.1-1.1z"/></svg>
           <span>@username</span>
         </div>
       </div>
@@ -321,78 +336,12 @@
       });
     });
 
-    // Print control: ensure all sections visible for print
+    // Print control: ensure all sections visible for print (contact print will be used)
     qs('#printCtrl').addEventListener('click', ()=>{
+      // show all sections for print preview
       qsa('section').forEach(s=>s.classList.add('active'));
       setTimeout(()=>window.print(), 120);
     });
-
-    // Theme: main/card colors change; nav locked to dark (no change)
-    function setTheme(light){
-      document.body.classList.toggle('light', !!light);
-      // force nav to dark appearance by overriding any theme changes
-      const nav = qs('nav');
-      nav.style.background = 'linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02))';
-    }
-    qs('#themeCtrl').addEventListener('click', ()=> setTheme(!document.body.classList.contains('light')));
-    setTheme(false);
-
-    // Language switching: full translations + dir + nav side + controls position + aria-labels
-    function setLang(lang){
-      if(lang === 'en'){
-        document.body.dataset.lang = 'en';
-        document.documentElement.lang = 'en';
-        document.body.setAttribute('dir','ltr');
-        // translate nav & headings
-        const en = ['About','Certificates','Skills','Contact'];
-        qsa('.nav-link').forEach((el, idx)=> el.textContent = en[idx]);
-        qs('#navTitle').textContent = 'Menu';
-        qs('#fullName').textContent = 'Nima Nazari';
-        qs('#subtitle').textContent = 'Network Engineer & Developer';
-        qs('#yearNav').parentElement.innerHTML = `© ${year} Nima Nazari`;
-        // section headings
-        // About section has H2 "Biography" already placed under About in DOM, translate:
-        qs('#about h2')?.remove?.(); // ensure no duplicate if present
-        // set other section headings
-        qs('#certs h2').textContent = 'Certificates';
-        qs('#skills h2').textContent = 'Skills & Tools';
-        qs('#contact h2').textContent = 'Contact';
-        // ARIA and titles
-        qsa('.contact-item a').forEach((a,i)=>{
-          if(i===0) a.setAttribute('aria-label','WhatsApp');
-          if(i===1) a.setAttribute('aria-label','Telegram');
-          if(i===2) a.setAttribute('aria-label','Instagram');
-        });
-        qs('#printCtrl').setAttribute('title','Print');
-        qs('#themeCtrl').setAttribute('title','Toggle theme');
-        qs('#langCtrl').textContent = 'EN';
-      } else {
-        document.body.dataset.lang = 'fa';
-        document.documentElement.lang = 'fa';
-        document.body.setAttribute('dir','rtl');
-        const fa = ['درباره من','مدارک','مهارت‌ها','تماس'];
-        qsa('.nav-link').forEach((el, idx)=> el.textContent = fa[idx]);
-        qs('#navTitle').textContent = 'منو';
-        qs('#fullName').textContent = 'نیما نظری';
-        qs('#subtitle').textContent = 'مهندس شبکه و توسعه‌دهنده';
-        qs('#yearNav').parentElement.innerHTML = `© ${year} نیما نظری`;
-        qs('#certs h2').textContent = 'مدارک و گواهینامه‌ها';
-        qs('#skills h2').textContent = 'نرم‌افزارها و دوره‌های تخصصی';
-        qs('#contact h2').textContent = 'تماس با من';
-        qsa('.contact-item a').forEach((a,i)=>{
-          if(i===0) a.setAttribute('aria-label','واتس‌اپ');
-          if(i===1) a.setAttribute('aria-label','تلگرام');
-          if(i===2) a.setAttribute('aria-label','اینستاگرام');
-        });
-        qs('#printCtrl').setAttribute('title','چاپ');
-        qs('#themeCtrl').setAttribute('title','تغییر حالت');
-        qs('#langCtrl').textContent = 'FA';
-      }
-      // ensure layout recalculation so CSS [dir="ltr"] rules apply
-      setTimeout(()=>window.dispatchEvent(new Event('resize')), 50);
-    }
-    qs('#langCtrl').addEventListener('click', ()=> setLang(document.body.dataset.lang === 'fa' ? 'en' : 'fa'));
-    setLang('fa');
 
     // Animate skill bars
     function animateSkills(){
@@ -403,7 +352,7 @@
     }
     window.addEventListener('load', animateSkills);
 
-    // Accessibility: allow Enter/Space to activate controls
+    // Accessibility: allow Enter/Space to activate controls and nav links
     qsa('.nav-link, .btn, .ctrl, .contact-item a').forEach(el=>{
       el.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' ') el.click(); });
     });
