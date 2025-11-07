@@ -9,14 +9,14 @@
     :root {
       --bg: #1e1e2f;
       --text: #e0e0e0;
-      --accent: #58a6ff;
+      --accent: #9f7aea;
       --card: #2c2f3a;
       --border: #444;
     }
     body.light {
-      --bg: #f2f2f2;
+      --bg: #f9f9ff;
       --text: #222;
-      --accent: #0077cc;
+      --accent: #7c3aed;
       --card: #ffffff;
       --border: #ccc;
     }
@@ -28,6 +28,22 @@
       direction: rtl;
       display: flex;
       transition: all 0.3s ease;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      width: 30px;
+      height: 30px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 999;
+      border: 2px solid white;
+    }
+    body.light .theme-toggle {
+      left: auto;
+      right: 15px;
     }
     nav {
       width: 220px;
@@ -126,22 +142,21 @@
       background: var(--accent);
       width: 70%;
     }
+    .socials {
+      text-align: center;
+      margin-top: 20px;
+    }
     .socials a {
       margin: 0 10px;
-      font-size: 1.2em;
+      font-size: 1.5em;
       color: var(--accent);
       text-decoration: none;
     }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: #777;
-      border-top: 1px solid var(--border);
-      margin-top: 40px;
+    .print-contact {
+      display: none;
     }
     @media print {
-      nav, .toggle-buttons {
+      nav, .theme-toggle, .socials {
         display: none;
       }
       main {
@@ -150,10 +165,27 @@
       section {
         display: block !important;
       }
+      .print-contact {
+        display: block;
+        margin-top: 20px;
+        font-size: 1.1em;
+        color: #000;
+      }
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: #777;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      width: 100%;
     }
   </style>
 </head>
 <body class="dark">
+
+<div class="theme-toggle" onclick="toggleTheme()" title="تغییر حالت"></div>
 
 <nav>
   <h2>منو</h2>
@@ -162,8 +194,6 @@
   <a onclick="showSection('skills')">مهارت‌ها</a>
   <a onclick="showSection('contact')">تماس</a>
   <button onclick="printPage()">چاپ کل صفحه</button>
-  <button onclick="toggleTheme()">تغییر حالت شب/روز</button>
-  <button onclick="toggleLang()">تغییر زبان FA/EN</button>
 </nav>
 
 <main>
@@ -193,16 +223,19 @@
     <h2>تماس با من</h2>
     <p>برای ارتباط با من از طریق شبکه‌های اجتماعی:</p>
     <div class="socials">
-      <a href="https://wa.me/989000000000" target="_blank">واتس‌اپ</a>
-      <a href="https://t.me/username" target="_blank">تلگرام</a>
-      <a href="https://instagram.com/username" target="_blank">اینستاگرام</a>
+      <a href="https://wa.me/989000000000" target="_blank">📱</a>
+      <a href="https://t.me/username" target="_blank">📨</a>
+      <a href="https://instagram.com/username" target="_blank">📷</a>
+    </div>
+    <div class="print-contact">
+      واتس‌اپ: 09000000000 | تلگرام: @username | اینستاگرام: @username
     </div>
   </section>
-
-  <footer>
-    © 2025 نیما نظری — مهندس شبکه و توسعه‌دهنده
-  </footer>
 </main>
+
+<footer>
+  © 2025 نیما نظری — مهندس شبکه و توسعه‌دهنده
+</footer>
 
 <script>
   function showSection(id) {
@@ -212,16 +245,3 @@
 
   function printPage() {
     window.print();
-  }
-
-  function toggleTheme() {
-    document.body.classList.toggle('light');
-  }
-
-  function toggleLang() {
-    alert("در نسخه بعدی زبان انگلیسی اضافه خواهد شد :)");
-  }
-</script>
-
-</body>
-</html>
