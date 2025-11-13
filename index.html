@@ -4,233 +4,185 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="نیما نظری — مهندس شبکه. طراحی، پیاده‌سازی و امن‌سازی شبکه؛ Wireshark, Issabel, CCNA, CCNP" />
-  <title> 1 نیما نظری | مهندس شبکه</title>
+  <title>نیما نظری | مهندس شبکه2</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #0f1220;
-      --panel: #0b0d14;
-      --card: #151824;
-      --muted: #98a3b0;
-      --text: #e6eef8;
-      --accent: #9f7aea;
-      --accent-strong: #7c3aed;
-      --border: rgba(255,255,255,0.06);
-      --shadow: 0 8px 22px rgba(2,6,23,0.6);
-      --nav-width: 260px;
-      --radius: 12px;
-      --gap: 18px;
-      --ctrl-size: 48px;
-      --max-content: 980px;
+      --bg:#0f1220;
+      --panel:#0b0d14;
+      --card:#151824;
+      --text:#e6eef8;
+      --muted:#98a3b0;
+      --accent:#9f7aea;
+      --accent-strong:#7c3aed;
+      --border:rgba(255,255,255,0.06);
+      --shadow:0 8px 22px rgba(2,6,23,0.6);
+      --nav-width:260px;
+      --radius:12px;
+      --ctrl-size:48px;
+      --max-content:980px;
     }
 
-    @media (prefers-color-scheme: light) {
-      :root{
-        --bg: #ffffff;
-        --panel: #f6f7fb;
-        --card: #fff;
-        --text: #0b1020;
-        --muted: #39424a;
-        --border: rgba(10,10,12,0.06);
-        --shadow: 0 6px 16px rgba(10,10,12,0.06);
-      }
+    html,body{height:100%}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100%;
+      font-family:"Vazirmatn", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      gap:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      min-height: 100%;
-      font-family: "Vazirmatn", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      gap: 24px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transition: background .25s ease, color .25s ease;
+    /* controls */
+    .controls{
+      position:fixed;
+      top:12px;
+      right:12px;
+      display:flex;
+      gap:10px;
+      z-index:1600;
+      align-items:center;
+    }
+    .ctrl{
+      width:var(--ctrl-size);
+      height:var(--ctrl-size);
+      border-radius:12px;
+      display:inline-grid;
+      place-items:center;
+      background:linear-gradient(180deg,var(--card),rgba(0,0,0,0.02));
+      color:var(--text);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:transform .12s ease,box-shadow .12s ease;
+    }
+    .ctrl:active{transform:scale(.98)}
+    .ctrl:focus{outline:3px solid rgba(124,58,237,0.14);outline-offset:2px}
+
+    .tooltip{
+      position:absolute;
+      top:calc(100% + 8px);
+      right:50%;
+      transform:translateX(50%) translateY(6px);
+      background:rgba(10,10,12,0.9);
+      color:#fff;
+      font-size:13px;
+      padding:6px 8px;
+      border-radius:8px;
+      white-space:nowrap;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .14s ease,transform .14s ease;
+      z-index:1200;
+    }
+    .ctrl:focus .tooltip,
+    .ctrl:hover .tooltip{opacity:1;transform:translateX(50%) translateY(0);pointer-events:auto}
+
+    /* nav */
+    nav{
+      width:var(--nav-width);
+      background:linear-gradient(180deg,var(--panel),rgba(0,0,0,0.02));
+      padding:28px 18px;
+      border-left:1px solid var(--border);
+      height:100vh;
+      position:sticky;
+      top:0;
+      align-self:flex-start;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      transition:transform .25s ease;
+    }
+    nav h2{margin:0 0 6px 0;font-size:1.1rem;color:var(--accent)}
+    .nav-link{display:block;padding:10px 12px;border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;cursor:pointer}
+    .nav-link:hover,.nav-link:focus{background:rgba(255,255,255,0.02);color:var(--accent)}
+    .nav-actions{margin-top:auto}
+    .nav-footer{text-align:center;color:var(--accent);padding:8px 0;font-weight:600}
+
+    main{
+      flex:1;
+      padding:34px;
+      max-width:var(--max-content);
+      margin:0 auto 40px auto;
+      width:100%;
     }
 
-    /* Controls */
-    .controls {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      display: flex;
-      gap: 10px;
-      z-index: 1600;
-      align-items: center;
-    }
-    .ctrl {
-      width: var(--ctrl-size);
-      height: var(--ctrl-size);
-      border-radius: 12px;
-      display: inline-grid;
-      place-items: center;
-      background: linear-gradient(180deg,var(--card), rgba(0,0,0,0.02));
-      color: var(--text);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .ctrl:active { transform: scale(.98); }
-    .ctrl:focus { outline: 3px solid rgba(124,58,237,0.14); outline-offset: 2px; }
+    section{display:none}
+    section.active{display:block}
 
-    .tooltip {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 50%;
-      transform: translateX(50%) translateY(6px);
-      background: rgba(10,10,12,0.9);
-      color: #fff;
-      padding: 6px 8px;
-      border-radius: 8px;
-      font-size: 13px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .14s ease, transform .14s ease;
-      z-index: 1200;
-    }
-    .ctrl:hover .tooltip,
-    .ctrl:focus .tooltip { opacity: 1; transform: translateX(50%) translateY(0); pointer-events: auto; }
-
-    /* Navigation */
-    nav {
-      width: var(--nav-width);
-      background: linear-gradient(180deg,var(--panel), rgba(0,0,0,0.02));
-      padding: 28px 18px;
-      border-left: 1px solid var(--border);
-      height: 100vh;
-      position: sticky;
-      top: 0;
-      align-self: flex-start;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .25s ease;
-    }
-    nav h2 { margin: 0 0 6px 0; font-size: 1.1rem; color: var(--accent); }
-    .nav-link {
-      display: block;
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .12s ease, color .12s ease;
-    }
-    .nav-link:hover,
-    .nav-link:focus { background: rgba(255,255,255,0.02); color: var(--accent); }
-
-    .nav-actions { margin-top: auto; display:flex; flex-direction:column; gap:10px; }
-    .nav-footer { text-align: center; color: var(--accent); padding: 8px 0; font-weight: 600; }
-
-    /* Main */
-    main {
-      flex: 1;
-      padding: 34px;
-      max-width: var(--max-content);
-      margin: 0 auto 40px auto;
-      width: 100%;
-    }
-
-    section { display: none; }
-    section.active { display: block; }
-
-    header.profile {
+    header.profile{
       display:flex;
       gap:16px;
       align-items:center;
-      justify-content: space-between;
-      padding: 18px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+      justify-content:space-between;
+      padding:18px;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);
     }
-    .profile-left { display:flex; align-items:center; gap:14px; }
-    .avatar {
-      width: 72px; height: 72px; border-radius: 12px;
-      background: linear-gradient(135deg,var(--accent),var(--accent-strong));
-      display:grid; place-items:center; font-weight:700; color:#fff; font-size:1.05rem;
-      box-shadow: 0 8px 30px rgba(124,58,237,0.12);
-      flex-shrink: 0;
-    }
-    .profile-meta h1 { margin:0; font-size:1.6rem; }
-    .profile-meta p { margin:6px 0 0; color: var(--muted); font-size:0.98rem; }
+    .profile-left{display:flex;gap:14px;align-items:center}
+    .avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.05rem;flex-shrink:0}
+    .profile-meta h1{margin:0;font-size:1.6rem}
+    .profile-meta p{margin:6px 0 0 0;color:var(--muted);font-size:0.98rem}
 
-    .grid { display:flex; flex-wrap:wrap; gap:16px; margin-top: 18px; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      width: 220px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(2,6,23,0.4);
-    }
-    .card img { width: 40px; height: 40px; object-fit: contain; margin-bottom: 10px; display:block; margin-inline:auto; }
-    .card p { margin: 0; font-weight: 700; color: var(--text); }
+    .grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;width:220px;text-align:center;box-shadow:0 8px 20px rgba(2,6,23,0.4)}
+    .card img{width:40px;height:40px;object-fit:contain;margin-bottom:10px;display:block;margin-inline:auto}
+    .card p{margin:0;font-weight:700;color:var(--text)}
 
-    .skill-bar { height: 10px; background: rgba(255,255,255,0.04); border-radius: 999px; overflow:hidden; margin-top:10px; }
-    .skill-level { height:100%; width:0; background: linear-gradient(90deg,var(--accent-strong),var(--accent)); transition: width .7s cubic-bezier(.2,.9,.2,1); }
+    .skill-bar{height:10px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:10px}
+    .skill-level{height:100%;width:0;background:linear-gradient(90deg,var(--accent-strong),var(--accent));transition:width .7s cubic-bezier(.2,.9,.2,1)}
 
-    /* Contact */
-    .contact-list {
-      display:flex; gap:14px; margin-top:14px; justify-content:center; align-items:center; flex-wrap:wrap;
-    }
-    .contact-item a { display:inline-flex; gap:10px; align-items:center; text-decoration:none; color:var(--text); padding:8px; border-radius:8px; }
-    .logo {
-      width: 36px; height: 36px; border-radius:8px;
-      display:grid; place-items:center; background: var(--card); border:1px solid var(--border); color:var(--accent);
-      flex: 0 0 36px;
-    }
-    .contact-text { color: var(--muted); font-weight: 700; font-size:0.98rem; }
+    .contact-list{display:flex;gap:14px;margin-top:14px;justify-content:center;align-items:center;flex-wrap:wrap}
+    .contact-item a{display:inline-flex;gap:10px;align-items:center;text-decoration:none;color:var(--text);padding:8px;border-radius:8px}
+    .logo{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--card);border:1px solid var(--border);color:var(--accent);flex:0 0 36px}
+    .contact-text{color:var(--muted);font-weight:700;font-size:0.98rem}
 
-    .visual-hide { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+    .visual-hide{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-    /* print-specific layout */
-    @media print {
-      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      body { background: #fff !important; color: #000 !important; }
-      nav, .controls, .nav-backdrop { display: none !important; }
-      main { padding: 0; max-width: 100%; }
-      section { display: block !important; break-inside: avoid; page-break-inside: avoid; color: #000; }
-      .avatar { display:none; }
-      .card { box-shadow: none; background: transparent; border: 1px solid #ddd; margin: 6px 0; }
-      .contact-list { display: none; }
-      .print-contact { display:block; color: #000; text-align:center; margin-top:12px; }
+    /* print */
+    @media print{
+      *{ -webkit-print-color-adjust:exact; print-color-adjust:exact }
+      body{background:#fff;color:#000}
+      nav,.controls,.nav-backdrop{display:none!important}
+      main{padding:0;max-width:100%}
+      section{display:block!important;break-inside:avoid;page-break-inside:avoid;color:#000}
+      .avatar{display:none}
+      .card{box-shadow:none;background:transparent;border:1px solid #ddd;margin:6px 0}
+      .contact-list{display:none}
+      .print-contact{display:block}
+      .nav-footer{color:#000!important}
     }
 
     /* responsive */
-    @media (max-width: 880px) {
-      nav { position: fixed; top:0; bottom:0; right: 0; left: auto; width: 92%; max-width: 420px; transform: translateX(110%); box-shadow: -8px 0 32px rgba(2,6,23,0.4); z-index: 1105; }
-      body.nav-open nav { transform: translateX(0); }
-      .nav-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.48); opacity: 0; pointer-events: none; transition: opacity .22s ease; z-index: 1090; }
-      body.nav-open .nav-backdrop { opacity:1; pointer-events: auto; }
-      main { padding: calc(18px + 72px) 18px 18px; }
-      .controls { right: 12px; left: auto; top: 10px; }
+    @media (max-width:880px){
+      nav{position:fixed;top:0;bottom:0;right:0;left:auto;width:92%;max-width:420px;transform:translateX(110%);box-shadow:-8px 0 32px rgba(2,6,23,0.4);z-index:1105}
+      body.nav-open nav{transform:translateX(0)}
+      .nav-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.48);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:1090}
+      body.nav-open .nav-backdrop{opacity:1;pointer-events:auto}
+      main{padding:calc(18px + 72px) 18px 18px}
+      .controls{right:12px;left:auto;top:10px}
     }
 
-    /* focus visibility (keyboard) */
-    :focus { outline: none; }
-    :focus-visible { outline: 3px solid rgba(124,58,237,0.16); outline-offset: 2px; border-radius: 8px; }
+    :focus{outline:none}
+    :focus-visible{outline:3px solid rgba(124,58,237,0.16);outline-offset:2px;border-radius:8px}
   </style>
 </head>
 <body data-lang="fa">
-
   <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
 
   <div class="controls" role="toolbar" aria-label="کنترل‌ها">
     <button id="navToggle" class="ctrl" aria-controls="mainNav" aria-expanded="false" aria-label="باز و بسته کردن منو" title="منو" type="button">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
         <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-          <line class="h1" x1="4" y1="7"  x2="20" y2="7"></line>
-          <line class="h2" x1="4" y1="12" x2="20" y2="12"></line>
-          <line class="h3" x1="4" y1="17" x2="20" y2="17"></line>
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
         </g>
       </svg>
       <span class="tooltip" role="status" aria-hidden="true">منو</span>
@@ -255,7 +207,6 @@
     <a class="nav-link" data-target="contact" href="#contact">تماس</a>
 
     <div class="nav-actions" aria-hidden="true"></div>
-
     <div class="nav-footer">© <span id="yearNav"></span> نیما نظری</div>
   </nav>
 
@@ -269,7 +220,6 @@
             <p id="subtitle">مهندس شبکه و توسعه‌دهنده</p>
           </div>
         </div>
-
         <div style="text-align:left;min-width:180px">
           <div style="color:var(--muted);font-size:0.95rem">طراحی شده توسط</div>
           <div style="margin-top:6px;font-weight:700;color:var(--accent)">Microsoft Copilot</div>
@@ -282,12 +232,12 @@
 
     <section id="bio" aria-labelledby="bio-title">
       <h2 id="bio-title" style="color:var(--accent)">زندگی‌نامه</h2>
-      <p style="color:var(--muted)">نیما نظری — تجربه در طراحی، پیاده‌سازی و عیب‌یابی شبکه،‌ کار با ابزارهایی مانند Wireshark، پیاده‌سازی PBX با Issabel و گواهینامه‌های CCNA/CCNP.</p>
+      <p style="color:var(--muted)">نیما نظری — تجربه در طراحی، پیاده‌سازی و عیب‌یابی شبکه؛ کار با Wireshark، پیاده‌سازی PBX با Issabel و گواهینامه‌های CCNA/CCNP.</p>
     </section>
 
     <section id="contact" aria-labelledby="contact-title">
       <h2 id="contact-title">تماس با من</h2>
-      <p style="color:var(--muted)">روی آیکن‌ها کلیک کنید تا لینک‌ها باز شوند. نسخه چاپی اطلاعات تماس به‌صورت مرتب نمایش داده می‌شود.</p>
+      <p style="color:var(--muted)">روی آیکن‌ها کلیک کنید تا لینک‌ها باز شوند. نسخه چاپی اطلاعات تماس در پایین قرار دارد.</p>
 
       <div class="contact-list" role="list" aria-label="راه‌های تماس">
         <div class="contact-item" role="listitem">
@@ -336,11 +286,11 @@
         </div>
       </div>
 
-      <div class="print-contact" aria-hidden="false">
-        <div style="display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;">
-          <div style="display:flex;gap:12px;align-items:center;"><span style="width:18px;height:18px;display:inline-grid;place-items:center;">✉️</span><span style="font-weight:700;">info@example.com</span></div>
-          <div style="display:flex;gap:12px;align-items:center;"><span style="width:18px;height:18px;display:inline-grid;place-items:center;">📞</span><span style="font-weight:700;">+98 900 000 0000</span></div>
-          <div style="display:flex;gap:12px;align-items:center;"><span style="width:18px;height:18px;display:inline-grid;place-items:center;">💬</span><span style="font-weight:700;">09000000000</span></div>
+      <div class="print-contact" aria-hidden="false" style="display:none;margin-top:14px;text-align:center">
+        <div style="display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center">
+          <div style="display:flex;gap:12px;align-items:center"><span style="width:18px;height:18px;display:inline-grid;place-items:center">✉️</span><span style="font-weight:700">info@example.com</span></div>
+          <div style="display:flex;gap:12px;align-items:center"><span style="width:18px;height:18px;display:inline-grid;place-items:center">📞</span><span style="font-weight:700">+98 900 000 0000</span></div>
+          <div style="display:flex;gap:12px;align-items:center"><span style="width:18px;height:18px;display:inline-grid;place-items:center">💬</span><span style="font-weight:700">09000000000</span></div>
         </div>
       </div>
     </section>
@@ -362,7 +312,6 @@
           <p>Wireshark</p>
           <div class="skill-bar"><div class="skill-level" data-level="92" aria-hidden="true"></div></div>
         </div>
-
         <div class="card">
           <img src="logo-issabel.png" alt="Issabel" loading="lazy">
           <p>Issabel</p>
@@ -378,58 +327,54 @@
       const qsa = s => Array.from(document.querySelectorAll(s));
       qs('#yearNav').textContent = new Date().getFullYear();
 
-      // accessible nav switching
+      // Nav links: prevent default anchor jump and toggle sections
       qsa('.nav-link').forEach(a=>{
-        a.addEventListener('click', (ev)=>{
+        a.addEventListener('click', ev=>{
           ev.preventDefault();
           const t = a.getAttribute('data-target');
           qsa('section').forEach(sec=>sec.classList.remove('active'));
           const el = qs('#'+t);
           if(el) el.classList.add('active');
-          closeNavImmediate();
+          if(document.body.classList.contains('nav-open')) closeNavImmediate();
           window.scrollTo({top:0,behavior:'smooth'});
         });
-        a.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') a.click(); });
+        a.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); a.click(); } });
       });
 
-      // animate skill bars when visible
+      // skill animation
       function animateSkills(){
         qsa('.skill-level').forEach(el=>{
-          const v = Number(el.dataset.level) || 60;
+          const v = Number(el.getAttribute('data-level')) || 60;
           el.style.width = v + '%';
         });
       }
-      // Run on load and when sections become visible (simple approach)
       window.addEventListener('load', animateSkills);
-      new IntersectionObserver(entries=>{
-        entries.forEach(entry=>{ if(entry.isIntersecting) animateSkills(); });
-      }, { threshold: 0.2 }).observe(document.body);
 
-      // mobile nav + backdrop + scroll lock
+      // Mobile nav with safe scroll-lock
       (function(){
         const navToggle = document.getElementById('navToggle');
-        const body = document.body;
+        const bodyEl = document.body;
         const mainNav = document.getElementById('mainNav');
         const navBackdrop = document.getElementById('navBackdrop');
+        let lockPos = 0;
 
-        let scrollY = 0;
         function lockScroll(){
-          scrollY = window.scrollY || document.documentElement.scrollTop;
+          lockPos = window.scrollY || document.documentElement.scrollTop;
           document.documentElement.style.scrollBehavior = 'auto';
-          body.style.position = 'fixed';
-          body.style.top = `-${scrollY}px`;
-          body.dataset.scrollY = String(scrollY);
+          bodyEl.style.position = 'fixed';
+          bodyEl.style.top = `-${lockPos}px`;
+          bodyEl.dataset.scrollY = String(lockPos);
         }
         function unlockScroll(){
-          const prev = Number(body.dataset.scrollY || 0);
-          body.style.position = '';
-          body.style.top = '';
-          delete body.dataset.scrollY;
+          const prev = Number(bodyEl.dataset.scrollY || 0);
+          bodyEl.style.position = '';
+          bodyEl.style.top = '';
+          delete bodyEl.dataset.scrollY;
           window.scrollTo(0, prev);
         }
 
         function openNav(){
-          body.classList.add('nav-open');
+          bodyEl.classList.add('nav-open');
           navToggle.setAttribute('aria-expanded','true');
           navBackdrop.setAttribute('aria-hidden','false');
           lockScroll();
@@ -437,15 +382,15 @@
           if(first) first.focus();
         }
         function closeNav(){
-          body.classList.remove('nav-open');
+          bodyEl.classList.remove('nav-open');
           navToggle.setAttribute('aria-expanded','false');
           navBackdrop.setAttribute('aria-hidden','true');
           unlockScroll();
           navToggle.focus();
         }
         window.closeNavImmediate = function(){
-          if(body.classList.contains('nav-open')){
-            body.classList.remove('nav-open');
+          if(bodyEl.classList.contains('nav-open')){
+            bodyEl.classList.remove('nav-open');
             navToggle.setAttribute('aria-expanded','false');
             navBackdrop.setAttribute('aria-hidden','true');
             unlockScroll();
@@ -453,15 +398,15 @@
         };
 
         if(navToggle){
-          navToggle.addEventListener('click', ()=>{ if(body.classList.contains('nav-open')) closeNav(); else openNav(); });
-          navToggle.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') navToggle.click(); });
+          navToggle.addEventListener('click', ()=>{ if(bodyEl.classList.contains('nav-open')) closeNav(); else openNav(); });
+          navToggle.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); navToggle.click(); } });
         }
         if(navBackdrop) navBackdrop.addEventListener('click', closeNav);
-        document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && body.classList.contains('nav-open')) closeNav(); });
-        window.addEventListener('resize', ()=>{ if(window.innerWidth > 880 && body.classList.contains('nav-open')) window.closeNavImmediate(); });
+        document.addEventListener('keydown', e=>{ if(e.key==='Escape' && bodyEl.classList.contains('nav-open')) closeNav(); });
+        window.addEventListener('resize', ()=>{ if(window.innerWidth > 880 && bodyEl.classList.contains('nav-open')) window.closeNavImmediate(); });
       })();
 
-      // Print preview
+      // Print preview handling (cross-browser)
       (function(){
         const body = document.body;
         let savedActive = null;
@@ -486,11 +431,11 @@
             const about = document.getElementById('about');
             if(about) about.classList.add('active');
           }
-          setTimeout(()=>{ window.scrollTo(savedScroll.x, savedScroll.y); }, 40);
+          setTimeout(()=> window.scrollTo(savedScroll.x, savedScroll.y), 40);
           savedActive = null;
         }
 
-        const printBtn = document.getElementById('printCtrl');
+        const printBtn = qs('#printCtrl');
         if(printBtn){
           printBtn.addEventListener('click', ()=>{
             enterPrintPreview();
@@ -506,12 +451,12 @@
           window.addEventListener('afterprint', onAfterPrint);
         } else if (window.matchMedia){
           const mql = window.matchMedia('print');
-          mql.addEventListener ? mql.addEventListener('change', (e)=>{ e.matches ? onBeforePrint() : onAfterPrint(); }) : mql.addListener((m)=>{ if(m.matches) onBeforePrint(); else onAfterPrint(); });
+          const handler = e => { if(e.matches) onBeforePrint(); else onAfterPrint(); };
+          if(mql.addEventListener) mql.addEventListener('change', handler); else mql.addListener(handler);
         } else {
           window.addEventListener('focus', ()=>{ setTimeout(()=>{ if(body.classList.contains('print-preview')) exitPrintPreview(); }, 120); });
         }
       })();
-
     })();
   </script>
 </body>
