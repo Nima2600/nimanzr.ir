@@ -155,6 +155,12 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 .card-title{margin:0 0 6px;color:#fff}
 .card-sub{margin:0 0 10px;color:var(--muted);font-size:0.92rem}
 
+/* لینک قابل کلیک روی لوگو */
+.cert-link { display:inline-block; text-decoration:none; color:inherit; }
+.cert-link .card-logo { cursor:pointer; transition:transform 160ms ease; }
+.cert-link:focus .card-logo,
+.cert-link:hover .card-logo { transform: translateY(-2px) scale(1.02); outline: none; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+
 /* نوار پیشرفت (نمایش صفحه) */
 .progress-group{margin-top:8px}
 .progress{
@@ -183,6 +189,15 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 .contact-list{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
 .contact-link{color:var(--muted);text-decoration:none;padding:10px;border-radius:8px;background:var(--glass);display:inline-block}
 .contact-link:hover{color:var(--accent);}
+
+/* مودال پیش‌نمایش مدرک */
+.cert-modal{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center}
+.cert-modal[aria-hidden="false"]{display:flex}
+.cert-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.6)}
+.cert-modal-content{position:relative;width:min(1100px,96%);max-height:94vh;background:#fff;border-radius:8px;overflow:hidden;padding:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.cert-modal-close{position:absolute;top:8px;left:10px;background:transparent;border:0;font-size:22px;cursor:pointer;color:#111}
+.cert-modal-body{width:100%;height:80vh;background:#fff;display:flex;align-items:center;justify-content:center}
+.cert-modal-body iframe{width:100%;height:100%;border:0;background:#fff}
 
 /* ریسپانسیو: موبایل — نمایش سایدبار بالای محتوا و منوی افقی اسکرولی */
 @media (max-width:900px){
