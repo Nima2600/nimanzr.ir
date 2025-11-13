@@ -22,14 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
+    // --- چاپ (همان رفتار قبلی، بدون لاگ) ---
     function prepareForPrint() {
       document.body.classList.add('printing');
-
-      // همه صفحات را visible می‌کنیم
       const allPages = Array.from(document.querySelectorAll('.page'));
       allPages.forEach(p => p.classList.add('active'));
 
-      // تنظیم inline width و display و visibility از مقدار CSS variable --value
       const fills = Array.from(document.querySelectorAll('.progress-fill'));
       fills.forEach(f => {
         const raw = getComputedStyle(f).getPropertyValue('--value') || '50%';
@@ -50,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
           f.style.right = '0';
         }
 
-        // اطمینان از خوانایی مقدار روی نوار
         const valEl = f.parentElement.querySelector('.progress-value');
         if (valEl) {
           try {
@@ -67,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      // اطمینان از قرار گرفتن در ابتدای محتوا و force reflow قبل از چاپ
       try {
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
@@ -75,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (c) c.offsetHeight;
       } catch (e) { /* silent */ }
 
-      // تأخیر کوتاه برای اعمال استایل‌ها قبل از چاپ
       requestAnimationFrame(() => {
         setTimeout(() => {
           window.print();
@@ -85,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function restoreAfterPrint() {
       document.body.classList.remove('printing');
-
       const activeBtn = document.querySelector('.menu-item.active');
       const target = activeBtn ? activeBtn.dataset.target : 'summary';
       showPage(target);
@@ -125,14 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // دکمه پرینت
     if (printBtn) {
       printBtn.addEventListener('click', () => {
         prepareForPrint();
       });
     }
 
-    // beforeprint/afterprint + matchMedia
     if (window.matchMedia) {
       const mql = window.matchMedia('print');
       if (typeof mql.addListener === 'function') {
@@ -171,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // دکمه زبان (جایگذاری)
     if (langBtn) {
       langBtn.addEventListener('click', () => {
         langBtn.classList.add('clicked');
@@ -181,6 +172,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // صفحه پیش‌فرض
     showPage('summary');
+
+    // --- مودال مدرک ---
+    (function(){
+      const modal = document.getElementById('certModal');
+      const viewer = document.getElementById('certViewer');
+
+      function openModal(src) {
+        // تلاش برای بارگذاری در iframe؛ اگر مرورگر اجازه ندهد، در تب جدید باز می‌شود
+        viewer.src = src;
+        modal.setAttribute('aria-hidden', 'false');
+        modal.focus();
+      }
+
+      function closeModal() {
+        viewer.src = '';
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      // لینک‌هایی که data-modal="1" دارند مودال را باز می‌کنند
+      document.querySelectorAll('.cert-link[data-modal="1"]').forEach(link => {
+        link.addEventListener('click', function(e){
+          e.preventDefault();
+          const href = link.getAttribute('href');
+          if (!href) return;
+          // برخی منابع (Cross-origin) ممکن است iframe را بلوک کنند؛ برای UX ابتدا تلاش می‌کنیم iframe، و اگر نمایش نداشت کاربر می‌تواند روی دکمه open in new tab کلیک کند.
+          openModal(href);
+        });
+      });
+
+      // بستن با کلیک روی بک‌دراپ یا دکمه بستن
+      modal.addEventListener('click', (e) => {
+        if (e.target.hasAttribute('data-close') || e.target === modal.querySelector('.cert-modal-backdrop')) {
+          closeModal();
+        }
+      });
+
+      // بستن با Escape
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') {
+          closeModal();
+        }
+      });
+    })();
 
   } catch (err) {
     // silent
