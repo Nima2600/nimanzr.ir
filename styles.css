@@ -237,6 +237,19 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 }
 
 /* === چاپ اصلاح‌شده: اجازه بده inline width اعمال شود و نوارها همیشه قابل دید باشند === */
+
+/* تنظیم صفحه چاپ برای حذف حاشیه‌های پیش‌فرض که ممکن است باعث ایجاد صفحه سفید اول شود */
+@page {
+  size: auto;
+  margin: 12mm;
+}
+
+/* اطمینان از حذف padding/margin اضافی در حالت چاپ */
+body.printing, html.printing, html.printing body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 body.printing{
   background:#fff !important;
   color:#000 !important;
@@ -283,7 +296,7 @@ body.printing .page h2{color:#111 !important}
 body.printing .card-title{color:#111 !important}
 body.printing .card-sub, body.printing .text, body.printing .contact-link{color:#222 !important}
 
-/* نوار پیشرفت چاپی: نمایش با الگوی راه‌راه و عرض از inline حفظ شود */
+/* نوار پیشرفت چاپی: نمایش با الگوی راه‌راه روشن‌تر و عرض از inline حفظ شود */
 body.printing .progress{
   background:#f1f1f1 !important;
   height:14px;
@@ -297,31 +310,36 @@ body.printing .progress-fill{
   background:
     repeating-linear-gradient(
       135deg,
-      #222 0px,
-      #222 6px,
-      #666 6px,
-      #666 12px
+      #888 0px,
+      #888 6px,
+      #ccc 6px,
+      #ccc 12px
     ) !important;
   box-shadow:none !important;
   min-width:6% !important;
   max-width:100% !important;
   right:0 !important;
+  left: auto !important;
+  position:absolute !important;
 }
 body.printing .progress-fill.alt{
   background:
     repeating-linear-gradient(
       135deg,
-      #444 0px,
-      #444 6px,
-      #999 6px,
-      #999 12px
+      #666 0px,
+      #666 6px,
+      #aaa 6px,
+      #aaa 12px
     ) !important;
 }
 body.printing .progress-value{
-  color:#111 !important;
-  font-weight:600;
-  left:auto;
-  right:8px;
+  color:#fff !important;
+  font-weight:700 !important;
+  z-index:3 !important;
+  position:absolute !important;
+  right:8px !important;
+  left:auto !important;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6) !important;
 }
 
 /* عکس در چاپ */
