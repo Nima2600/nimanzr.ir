@@ -236,12 +236,12 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
   .cards{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 }
 
-/* === چاپ اصلاح‌شده: اجازه بده inline width اعمال شود و نوارها همیشه قابل دید باشند === */
+/* === چاپ اصلاح‌شده: جلوگیری از صفحه سفید اول و خوانایی بهتر === */
 
-/* تنظیم صفحه چاپ برای حذف حاشیه‌های پیش‌فرض که ممکن است باعث ایجاد صفحه سفید اول شود */
+/* تنظیم صفحه چاپ برای حذف حاشیهٔ ناخواسته که ممکن است صفحه سفید ایجاد کند */
 @page {
   size: auto;
-  margin: 12mm;
+  margin: 0;
 }
 
 /* اطمینان از حذف padding/margin اضافی در حالت چاپ */
@@ -266,7 +266,7 @@ body.printing .app{
   box-shadow:none;
 }
 body.printing .sidebar{display:none !important}
-body.printing .content{display:flex;flex-direction:column;gap:12px}
+body.printing .content{display:flex;flex-direction:column;gap:12px;padding:8mm !important}
 body.printing #summary{order:1}
 body.printing #bio{order:2}
 body.printing #contact{order:3}
@@ -282,7 +282,7 @@ body.printing #contact{
 
 /* صفحات */
 body.printing .page{display:block !important;page-break-inside:avoid}
-body.printing .content{padding:18mm !important}
+body.printing .content{box-shadow:none !important}
 
 /* کارت‌ها و عکس */
 body.printing .card,
@@ -296,7 +296,7 @@ body.printing .page h2{color:#111 !important}
 body.printing .card-title{color:#111 !important}
 body.printing .card-sub, body.printing .text, body.printing .contact-link{color:#222 !important}
 
-/* نوار پیشرفت چاپی: نمایش با الگوی راه‌راه روشن‌تر و عرض از inline حفظ شود */
+/* نوار پیشرفت چاپی: الگوی راه‌راه روشن‌تر و حفظ عرض از inline */
 body.printing .progress{
   background:#f1f1f1 !important;
   height:14px;
@@ -349,10 +349,39 @@ body.printing .profile-photo{
 body.printing .summary-row{display:block;overflow:visible}
 body.printing .summary-text{overflow:visible}
 
-/* شکست صفحات برای چاپ */
-@media print{
-  html,body{height:auto}
-  .page{break-after:avoid;break-inside:avoid}
+/* جلوگیری از صفحهٔ سفید: پاکسازی floatها و لغو page-break های ناخواسته */
+@media print {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    background: none !important;
+  }
+
+  .app, .content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.printing .content {
+    padding: 0 8mm 8mm 8mm !important;
+  }
+
+  body.printing .content::before {
+    content: "";
+    display: block;
+    clear: both;
+    height: 0;
+    visibility: hidden;
+  }
+
+  .page, .page * {
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-before: avoid !important;
+    break-inside: avoid !important;
+  }
+
   .cards{page-break-inside:avoid}
   img{max-width:100%}
 }
