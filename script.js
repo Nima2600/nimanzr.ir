@@ -1,8 +1,5 @@
-// script.js — نسخه با بهبود برای چاپ: تنظیم display و width صریح، و پاک‌سازی بعد از چاپ
 document.addEventListener('DOMContentLoaded', function () {
   try {
-    console.log('[script.js] loaded');
-
     const menuItems = Array.from(document.querySelectorAll('.menu-item'));
     const pages = Array.from(document.querySelectorAll('.page'));
     const printBtn = document.getElementById('printBtn');
@@ -25,9 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    // آماده‌سازی چاپ: تنظیم نوارها و اطمینان از نمایش آنها
     function prepareForPrint() {
-      console.log('[print] prepareForPrint start');
       document.body.classList.add('printing');
 
       // همه صفحات را visible می‌کنیم
@@ -39,35 +34,57 @@ document.addEventListener('DOMContentLoaded', function () {
       fills.forEach(f => {
         const raw = getComputedStyle(f).getPropertyValue('--value') || '50%';
         const val = raw.trim().endsWith('%') ? raw.trim() : (raw.trim() + '%');
+        // تلاش برای استفاده از setProperty با اولویت مهم
         try {
           f.style.setProperty('width', val, 'important');
           f.style.setProperty('display', 'block', 'important');
           f.style.setProperty('visibility', 'visible', 'important');
-          f.style.setProperty('min-width', '6%', 'important'); // تضمین دیده شدن در چاپ
-          console.log('[print] set progress width for', f, '->', val);
+          f.style.setProperty('min-width', '6%', 'important');
+          f.style.setProperty('position', 'absolute', 'important');
+          f.style.setProperty('right', '0', 'important');
         } catch (e) {
-          // مرورگرهای قدیمی ممکن است از third param ignore کنند
           f.style.width = val;
           f.style.display = 'block';
           f.style.visibility = 'visible';
           f.style.minWidth = '6%';
-          console.log('[print] fallback set progress width for', f, '->', val);
+          f.style.position = 'absolute';
+          f.style.right = '0';
+        }
+
+        // اطمینان از خوانایی مقدار روی نوار
+        const valEl = f.parentElement.querySelector('.progress-value');
+        if (valEl) {
+          try {
+            valEl.style.setProperty('color', '#fff', 'important');
+            valEl.style.setProperty('z-index', '3', 'important');
+            valEl.style.setProperty('position', 'absolute', 'important');
+            valEl.style.setProperty('right', '8px', 'important');
+          } catch (e) {
+            valEl.style.color = '#fff';
+            valEl.style.zIndex = '3';
+            valEl.style.position = 'absolute';
+            valEl.style.right = '8px';
+          }
         }
       });
 
-      // force layout و سپس print با تأخیر بیشتر
+      // اطمینان از قرار گرفتن در ابتدای محتوا و force reflow قبل از چاپ
+      try {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        const c = document.querySelector('.content');
+        if (c) c.offsetHeight;
+      } catch (e) { /* silent */ }
+
+      // تأخیر کوتاه برای اعمال استایل‌ها قبل از چاپ
       requestAnimationFrame(() => {
         setTimeout(() => {
-          console.log('[print] calling window.print()');
           window.print();
-        }, 500);
+        }, 400);
       });
-
-      console.log('[print] prepareForPrint scheduled print');
     }
 
     function restoreAfterPrint() {
-      console.log('[print] restoreAfterPrint start');
       document.body.classList.remove('printing');
 
       const activeBtn = document.querySelector('.menu-item.active');
@@ -76,13 +93,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const fills = Array.from(document.querySelectorAll('.progress-fill'));
       fills.forEach(f => {
-        // پاک کردن استایل‌های inline ای که اضافه شده‌اند
-        f.style.removeProperty('width');
-        f.style.removeProperty('display');
-        f.style.removeProperty('visibility');
-        f.style.removeProperty('min-width');
+        try {
+          f.style.removeProperty('width');
+          f.style.removeProperty('display');
+          f.style.removeProperty('visibility');
+          f.style.removeProperty('min-width');
+          f.style.removeProperty('position');
+          f.style.removeProperty('right');
+        } catch (e) {
+          f.style.width = '';
+          f.style.display = '';
+          f.style.visibility = '';
+          f.style.minWidth = '';
+          f.style.position = '';
+          f.style.right = '';
+        }
+
+        const valEl = f.parentElement.querySelector('.progress-value');
+        if (valEl) {
+          try {
+            valEl.style.removeProperty('color');
+            valEl.style.removeProperty('z-index');
+            valEl.style.removeProperty('position');
+            valEl.style.removeProperty('right');
+          } catch (e) {
+            valEl.style.color = '';
+            valEl.style.zIndex = '';
+            valEl.style.position = '';
+            valEl.style.right = '';
+          }
+        }
       });
-      console.log('[print] restoreAfterPrint done');
     }
 
     // دکمه پرینت
@@ -90,8 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
       printBtn.addEventListener('click', () => {
         prepareForPrint();
       });
-      console.log('[script.js] printBtn listener attached');
-    } else console.warn('[script.js] printBtn NOT found');
+    }
 
     // beforeprint/afterprint + matchMedia
     if (window.matchMedia) {
@@ -99,22 +139,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (typeof mql.addListener === 'function') {
         mql.addListener(m => {
           if (m.matches) {
-            console.log('[matchMedia] print start');
-            // بعضی مرورگرها این را خودشان فراخوانی می‌کنند؛ اما ما redundantly prepare می‌کنیم
             if (!document.body.classList.contains('printing')) prepareForPrint();
           } else {
-            console.log('[matchMedia] print end');
             restoreAfterPrint();
           }
         });
       }
     }
     window.addEventListener('beforeprint', () => {
-      console.log('[event] beforeprint');
       if (!document.body.classList.contains('printing')) prepareForPrint();
     });
     window.addEventListener('afterprint', () => {
-      console.log('[event] afterprint');
       restoreAfterPrint();
     });
 
@@ -129,14 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (ctrlOrCmd && (key === 'p' || code === 'KeyP')) {
           e.preventDefault();
           if (!document.body.classList.contains('printing')) {
-            console.log('[shortcut] Ctrl/Cmd+P detected — triggering print flow');
             prepareForPrint();
-          } else {
-            console.log('[shortcut] already printing — ignored');
           }
         }
       } catch (innerErr) {
-        console.error('[script.js][keydown] error', innerErr);
+        // silent
       }
     });
 
@@ -152,6 +184,6 @@ document.addEventListener('DOMContentLoaded', function () {
     showPage('summary');
 
   } catch (err) {
-    console.error('[script.js] initialization error', err);
+    // نگهداری از خطاها بدون لاگ شدن
   }
 });
