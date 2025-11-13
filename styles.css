@@ -1,8 +1,8 @@
 :root{
-  --bg:#0b0710;            /* خیلی تیره */
-  --panel:#0f0b16;         /* تیره‌تر برای پنل‌ها */
-  --accent:#8b5cf6;        /* بنفش روشن */
-  --accent-2:#5b21b6;      /* بنفش تیره */
+  --bg:#0b0710;
+  --panel:#0f0b16;
+  --accent:#8b5cf6;
+  --accent-2:#5b21b6;
   --muted:#9aa0a6;
   --card:#111018;
   --glass:rgba(255,255,255,0.03);
@@ -12,19 +12,18 @@
   font-family: "Vazirmatn", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color-scheme: dark;
   color: #e6e6ea;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
 }
 
-/* ساختار کلی */
+/* پایه */
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#050308);font-size:16px}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#050308);font-size:16px;direction:rtl}
 .app{
   max-width:var(--max-width);
   margin:28px auto;
   display:flex;
   gap:var(--gap);
   padding:20px;
+  flex-direction:row-reverse; /* سایدبار سمت راست */
 }
 
 /* سایدبار */
@@ -37,6 +36,7 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
   flex-direction:column;
   gap:18px;
   box-shadow: 0 6px 30px rgba(11,7,16,0.6);
+  text-align:right; /* راست‌چین کردن محتوا */
 }
 .brand h1{margin:0;font-size:1.25rem;color:var(--accent)}
 .brand .role{margin:4px 0 0;color:var(--muted);font-size:0.95rem}
@@ -46,7 +46,7 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 .menu-item{
   background:transparent;
   border:0;
-  text-align:left;
+  text-align:right; /* متن دکمه‌ها راست‌چین */
   padding:10px 12px;
   border-radius:10px;
   color:inherit;
@@ -81,19 +81,21 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
   min-height:420px;
   box-shadow: 0 6px 30px rgba(11,7,16,0.6);
   display:block;
+  text-align:right; /* متن اصلی راست‌چین */
 }
 
 /* صفحات */
 .page{display:none}
 .page.active{display:block}
 .page h2{margin-top:0;color:var(--accent)}
-.text{color:var(--muted);line-height:1.7}
+.text{color:var(--muted);line-height:1.7;direction:rtl; text-align:right}
 
-/* کارت‌ها */
+/* کارت‌ها و نوار پیشرفت (همانند قبل) */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:14px}
 .card{
   background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);
+  text-align:right;
 }
 .card-title{margin:0 0 6px;color:#fff}
 .card-sub{margin:0 0 10px;color:var(--muted);font-size:0.92rem}
@@ -102,15 +104,15 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 .progress-group{margin-top:8px}
 .progress{position:relative;height:12px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
 .progress-fill{
-  position:absolute;left:0;top:0;height:100%;
+  position:absolute;right:0;top:0;height:100%;
   width:var(--value,50%);
   background:linear-gradient(90deg,var(--accent),var(--accent-2));
   transition:width 600ms ease;
 }
 .progress-fill.alt{
-  background:linear-gradient(90deg,#22c1c3,#7b2ff7); /* تنوع رنگ برای نوار دوم */
+  background:linear-gradient(90deg,#22c1c3,#7b2ff7);
 }
-.progress-value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:0.78rem;color:var(--muted)}
+.progress-value{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:0.78rem;color:var(--muted)}
 
 /* لیست تماس */
 .contact-list{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
@@ -122,7 +124,7 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
   .app{flex-direction:column;padding:12px}
   .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px}
   .menu{flex-direction:row;gap:6px;overflow:auto}
-  .sidebar-actions{margin-left:auto;display:flex;gap:8px;width:auto}
+  .sidebar-actions{margin-left:0;margin-right:auto;display:flex;gap:8px;width:auto}
   .content{padding:16px}
 }
 @media (max-width:480px){
