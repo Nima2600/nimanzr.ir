@@ -1,4 +1,4 @@
-// تنها مسئول نمایش/پنهان صفحات و مدیریت کلاس active در منو + آماده‌سازی چاپ
+// نمایش/پنهان صفحات و مدیریت چاپ با ترتیب دلخواه
 document.addEventListener('DOMContentLoaded', function () {
   const menuItems = Array.from(document.querySelectorAll('.menu-item'));
   const pages = Array.from(document.querySelectorAll('.page'));
@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.addEventListener('click', () => {
       showPage(btn.dataset.target);
     });
-    // دسترسی کیبورد
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -29,66 +28,58 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // دکمه پرینت: آماده‌سازی صفحه برای چاپ و بازگرداندن حالت بعد از چاپ
+  // دکمه پرینت: آماده‌سازی صفحه برای چاپ با ترتیب مشخص
   const printBtn = document.getElementById('printBtn');
   if (printBtn) {
     const startPrint = () => {
       // اضافه کردن کلاس printing به body تا CSS مخصوص چاپ اعمال شود
       document.body.classList.add('printing');
 
-      // برای چاپ می‌خواهیم همه بخش‌ها پشت سر هم نمایش داده شوند، پس همه صفحات را visible می‌کنیم
+      // همه صفحات را visible می‌کنیم تا چاپ پشت سر هم انجام شود
       const allPages = Array.from(document.querySelectorAll('.page'));
       allPages.forEach(p => p.classList.add('active'));
 
-      // اطمینان از اینکه نوارهای پیشرفت مقدار نهایی را نشان می‌دهند:
-      // تنظیم inline width از مقدار CSS variable --value برای برخی مرورگرها در چاپ بهتر عمل کند
+      // اطمینان از اینکه نوارهای پیشرفت عرض صحیح را نشان می‌دهند:
       const fills = Array.from(document.querySelectorAll('.progress-fill'));
       fills.forEach(f => {
         const val = getComputedStyle(f).getPropertyValue('--value') || '50%';
         f.style.width = val.trim();
       });
 
-      // صبر کوتاه برای اعمال تغییرات DOM و CSS، سپس فراخوانی چاپ
+      // کوتاه صبر کن تا CSS اعمال شود سپس پنجره چاپ را باز کن
       setTimeout(() => {
-        // استفاده از window.print() برای باز کردن دیالوگ چاپ
         window.print();
-      }, 150);
+      }, 200);
     };
 
     const endPrint = () => {
       // حذف کلاس printing و بازگرداندن نمایش فقط بخش فعال
       document.body.classList.remove('printing');
 
-      // بازگشت به صفحه‌ای که کاربر آخرین بار انتخاب کرده بود: با بررسی منوی فعال
+      // بازگشت به صفحه‌ای که کاربر آخرین بار انتخاب کرده بود
       const activeBtn = document.querySelector('.menu-item.active');
       const target = activeBtn ? activeBtn.dataset.target : 'summary';
       showPage(target);
+
+      // پاک کردن inline widthهای اضافه‌شده (اختیاری ولی تمیزکننده)
+      const fills = Array.from(document.querySelectorAll('.progress-fill'));
+      fills.forEach(f => {
+        f.style.width = '';
+      });
     };
 
-    // اتصال به دکمه
-    printBtn.addEventListener('click', () => {
-      startPrint();
-    });
+    printBtn.addEventListener('click', startPrint);
 
-    // رویدادهای beforeprint/afterprint برای مرورگرهایی که از آنها پشتیبانی می‌کنند
+    // رویدادهای afterprint/بدیل matchMedia
     if (window.matchMedia) {
-      // برای مرورگرهای مدرن: listen to print media changes
       const mql = window.matchMedia('print');
       mql.addListener(mql => {
-        if (mql.matches) {
-          // before print (some browsers)
-        } else {
-          // after print
+        if (!mql.matches) {
           endPrint();
         }
       });
     }
-
-    // fallback: رویدادهای مستقیم قبل و بعد چاپ
     window.addEventListener('afterprint', endPrint);
-    window.addEventListener('beforeprint', () => {
-      // بعضی مرورگرها قبل از نمایش دیالوگ چاپ صدا می‌کنند
-    });
   }
 
   // دکمه زبان: فقط جایگذاری شده (بدون عملکرد)
