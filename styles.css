@@ -285,7 +285,7 @@ body.printing .profile-photo{
 body.printing .summary-row{display:block;overflow:visible}
 body.printing .summary-text{overflow:visible}
 
-/* اجتناب از شکست متن و کنترل صفحه‌بندی */
+/* اجتناب از شکست متن و کنترل صفحه‌بندی  */
 @media print{
   html,body{height:auto}
   .page{break-after:avoid;break-inside:avoid}
