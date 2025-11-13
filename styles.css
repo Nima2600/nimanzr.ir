@@ -232,3 +232,63 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
   .brand h1{font-size:1rem}
   .cards{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 }
+
+/* قوانین مخصوص چاپ (print) */
+/* وقتی کلاس printing روی body قرار می‌گیرد، قالب‌بندی برای چاپ فعال می‌شود */
+body.printing{
+  background:#fff !important;
+  color:#000 !important;
+}
+body.printing .app{
+  max-width:100%;
+  margin:0;
+  padding:0;
+  display:block;
+  gap:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+/* پنهان کردن سایدبار در چاپ */
+body.printing .sidebar{display:none !important}
+
+/* نمایش همه صفحات پشت سر هم برای چاپ */
+body.printing .page{display:block !important;page-break-inside:avoid}
+body.printing .content{padding:18mm !important}
+
+/* رنگ پس‌زمینه‌ها برای خوانایی چاپ سفید شود و کنتراست متن حفظ شود */
+body.printing .card,
+body.printing .profile-photo,
+body.printing .contact-link{
+  background:transparent !important;
+  border:1px solid #ddd !important;
+  box-shadow:none !important;
+}
+
+/* رنگ متن و عناوین */
+body.printing .page h2{color:#111 !important}
+body.printing .card-title{color:#111 !important}
+body.printing .card-sub, body.printing .text, body.printing .contact-link{color:#222 !important}
+
+/* نوار پیشرفت در چاپ: به جای گرادینت، رنگ ساده و قابل چاپ */
+body.printing .progress{background:#eee !important;height:10px}
+body.printing .progress-fill{background:#333 !important;transition:none;height:100%}
+body.printing .progress-fill.alt{background:#666 !important}
+
+/* متن درصد در چاپ */
+body.printing .progress-value{color:#111 !important;left:auto;right:8px}
+
+/* اندازه و چیدمان عکس در چاپ */
+body.printing .profile-photo{
+  width:96px;height:96px;border-radius:6px;float:left;margin-left:12px;margin-bottom:8px;
+}
+body.printing .summary-row{display:block;overflow:visible}
+body.printing .summary-text{overflow:visible}
+
+/* اجتناب از شکست متن و کنترل صفحه‌بندی */
+@media print{
+  html,body{height:auto}
+  .page{break-after:avoid;break-inside:avoid}
+  .cards{page-break-inside:avoid}
+  img{max-width:100%}
+}
