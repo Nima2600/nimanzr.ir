@@ -1,3 +1,4 @@
+// تنها مسئول نمایش/پنهان صفحات و مدیریت کلاس active در منو
 document.addEventListener('DOMContentLoaded', function () {
   const menuItems = Array.from(document.querySelectorAll('.menu-item'));
   const pages = Array.from(document.querySelectorAll('.page'));
@@ -19,19 +20,33 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.addEventListener('click', () => {
       showPage(btn.dataset.target);
     });
+    // دسترسی کیبورد
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        btn.click();
+      }
+    });
   });
 
+  // دکمه پرینت: فقط جایگذاری شده (بدون عملکرد)
   const printBtn = document.getElementById('printBtn');
-  printBtn.addEventListener('click', () => {
-    printBtn.classList.add('clicked');
-    setTimeout(() => printBtn.classList.remove('clicked'), 220);
-  });
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      printBtn.classList.add('clicked');
+      setTimeout(() => printBtn.classList.remove('clicked'), 220);
+    });
+  }
 
+  // دکمه زبان: فقط جایگذاری شده (بدون عملکرد)
   const langBtn = document.getElementById('langBtn');
-  langBtn.addEventListener('click', () => {
-    langBtn.classList.add('clicked');
-    setTimeout(() => langBtn.classList.remove('clicked'), 220);
-  });
+  if (langBtn) {
+    langBtn.addEventListener('click', () => {
+      langBtn.classList.add('clicked');
+      setTimeout(() => langBtn.classList.remove('clicked'), 220);
+    });
+  }
 
+  // صفحه پیش‌فرض
   showPage('summary');
 });
