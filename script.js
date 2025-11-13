@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
       fills.forEach(f => {
         const raw = getComputedStyle(f).getPropertyValue('--value') || '50%';
         const val = raw.trim().endsWith('%') ? raw.trim() : (raw.trim() + '%');
-        // تلاش برای استفاده از setProperty با اولویت مهم
         try {
           f.style.setProperty('width', val, 'important');
           f.style.setProperty('display', 'block', 'important');
@@ -184,6 +183,6 @@ document.addEventListener('DOMContentLoaded', function () {
     showPage('summary');
 
   } catch (err) {
-    // نگهداری از خطاها بدون لاگ شدن
+    // silent
   }
 });
