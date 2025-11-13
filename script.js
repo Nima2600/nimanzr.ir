@@ -1,4 +1,3 @@
-// ساده و قابل ویرایش: فقط نمایش و پنهان کردن بخش‌ها و مدیریت کلاس active در منو
 document.addEventListener('DOMContentLoaded', function () {
   const menuItems = Array.from(document.querySelectorAll('.menu-item'));
   const pages = Array.from(document.querySelectorAll('.page'));
@@ -12,33 +11,27 @@ document.addEventListener('DOMContentLoaded', function () {
       if (btn.dataset.target === id) btn.classList.add('active');
       else btn.classList.remove('active');
     });
-    // فوکس برای دسترس‌پذیری
     const activePage = document.getElementById(id);
     if (activePage) activePage.focus();
   }
 
-  // تنظیم رفتار کلیک روی منو
   menuItems.forEach(btn => {
     btn.addEventListener('click', () => {
       showPage(btn.dataset.target);
     });
   });
 
-  // دکمه پرینت: فقط جایگذاری شده (بدون عملکرد)
   const printBtn = document.getElementById('printBtn');
   printBtn.addEventListener('click', () => {
-    // عملکرد پرینت بعدا اضافه خواهد شد؛ فعلا فقط افکت سریع
     printBtn.classList.add('clicked');
     setTimeout(() => printBtn.classList.remove('clicked'), 220);
   });
 
-  // دکمه زبان: فقط جایگذاری شده (بدون عملکرد)
   const langBtn = document.getElementById('langBtn');
   langBtn.addEventListener('click', () => {
     langBtn.classList.add('clicked');
     setTimeout(() => langBtn.classList.remove('clicked'), 220);
   });
 
-  // اگر لازم شد می‌توانی صفحه پیش‌فرض را از اینجا عوض کنی:
   showPage('summary');
 });
