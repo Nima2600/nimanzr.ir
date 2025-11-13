@@ -157,12 +157,22 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 
 /* نوار پیشرفت (نمایش صفحه) */
 .progress-group{margin-top:8px}
-.progress{position:relative;height:12px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+.progress{
+  position:relative;
+  height:12px;
+  background:rgba(255,255,255,0.03);
+  border-radius:999px;
+  overflow:hidden;
+}
 .progress-fill{
-  position:absolute;right:0;top:0;height:100%;
+  position:absolute;
+  right:0;
+  top:0;
+  height:100%;
   width:var(--value,50%);
   background:linear-gradient(90deg,var(--accent),var(--accent-2));
   transition:width 600ms ease;
+  display:block;
 }
 .progress-fill.alt{
   background:linear-gradient(90deg,#22c1c3,#7b2ff7);
@@ -226,11 +236,12 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
   .cards{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 }
 
-/* قوانین مخصوص چاپ (print) و ترتیب صفحات چاپی */
-/* وقتی کلاس printing روی body قرار می‌گیرد، قالب‌بندی برای چاپ فعال می‌شود */
+/* === چاپ اصلاح‌شده: اجازه بده inline width اعمال شود و نوارها همیشه قابل دید باشند === */
 body.printing{
   background:#fff !important;
   color:#000 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 body.printing .app{
   max-width:100%;
@@ -241,11 +252,7 @@ body.printing .app{
   background:transparent;
   box-shadow:none;
 }
-
-/* پنهان کردن سایدبار در چاپ */
 body.printing .sidebar{display:none !important}
-
-/* ترتیب صفحات در چاپ: مشخص کردن order برای هر بخش */
 body.printing .content{display:flex;flex-direction:column;gap:12px}
 body.printing #summary{order:1}
 body.printing #bio{order:2}
@@ -253,14 +260,18 @@ body.printing #contact{order:3}
 body.printing #certs{order:4}
 body.printing #skills{order:5}
 
-/* بعد از تماس یک شکست صفحه اجباری تا مدارک و مهارت ها روی صفحه دوم بیفتند */
-body.printing #contact{page-break-after:always;break-after:page}
+/* شکست صفحه بعد از تماس */
+body.printing #contact{
+  page-break-after: always;
+  break-after: page;
+  -webkit-page-break-after: always;
+}
 
-/* نمایش همه صفحات پشت سر هم برای چاپ */
+/* صفحات */
 body.printing .page{display:block !important;page-break-inside:avoid}
 body.printing .content{padding:18mm !important}
 
-/* ظاهر کارت‌ها و عکس در چاپ */
+/* کارت‌ها و عکس */
 body.printing .card,
 body.printing .profile-photo,
 body.printing .contact-link{
@@ -268,17 +279,21 @@ body.printing .contact-link{
   border:1px solid #ddd !important;
   box-shadow:none !important;
 }
-
 body.printing .page h2{color:#111 !important}
 body.printing .card-title{color:#111 !important}
 body.printing .card-sub, body.printing .text, body.printing .contact-link{color:#222 !important}
 
-/* نوار پیشرفت چاپی با استایل "جالب" (راه‌راه و ضخیم‌تر) */
-body.printing .progress{background:#f1f1f1 !important;height:14px;border-radius:6px;overflow:hidden}
+/* نوار پیشرفت چاپی: نمایش با الگوی راه‌راه و عرض از inline حفظ شود */
+body.printing .progress{
+  background:#f1f1f1 !important;
+  height:14px;
+  border-radius:6px;
+  overflow:visible;
+}
 body.printing .progress-fill{
+  display:block !important;
   height:100% !important;
   transition:none !important;
-  /* الگوی راه‌راه برای جلوه چاپی */
   background:
     repeating-linear-gradient(
       135deg,
@@ -288,9 +303,10 @@ body.printing .progress-fill{
       #666 12px
     ) !important;
   box-shadow:none !important;
+  min-width:6% !important;
+  max-width:100% !important;
+  right:0 !important;
 }
-
-/* نوار دوم (alt) تیره‌تر */
 body.printing .progress-fill.alt{
   background:
     repeating-linear-gradient(
@@ -301,8 +317,6 @@ body.printing .progress-fill.alt{
       #999 12px
     ) !important;
 }
-
-/* نمایش درصد به صورت واضح در سمت راست (RTL) */
 body.printing .progress-value{
   color:#111 !important;
   font-weight:600;
@@ -310,14 +324,14 @@ body.printing .progress-value{
   right:8px;
 }
 
-/* اندازه و چیدمان عکس در چاپ */
+/* عکس در چاپ */
 body.printing .profile-photo{
   width:96px;height:96px;border-radius:6px;float:left;margin-left:12px;margin-bottom:8px;
 }
 body.printing .summary-row{display:block;overflow:visible}
 body.printing .summary-text{overflow:visible}
 
-/* کنترل شکست صفحات در چاپ */
+/* شکست صفحات برای چاپ */
 @media print{
   html,body{height:auto}
   .page{break-after:avoid;break-inside:avoid}
