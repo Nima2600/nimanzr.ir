@@ -125,16 +125,56 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0503
 .contact-link{color:var(--muted);text-decoration:none;padding:10px;border-radius:8px;background:var(--glass);display:inline-block}
 .contact-link:hover{color:var(--accent);}
 
-/* ریسپانسیو */
+/* ریسپانسیو: موبایل — نمایش سایدبار بالای محتوا و منوی افقی اسکرولی */
 @media (max-width:900px){
-  .app{flex-direction:column;padding:12px}
-  .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px}
-  .menu{flex-direction:row;gap:6px;overflow:auto}
-  .sidebar-actions{margin-left:0;margin-right:auto;display:flex;gap:8px;width:auto}
-  .content{padding:16px}
+  .app{
+    flex-direction:column;
+    padding:12px;
+  }
+
+  /* روی موبایل می‌خواهیم سایدبار بالای محتوا باشد */
+  .sidebar{
+    width:100%;
+    flex-direction:row;
+    align-items:center;
+    padding:12px;
+    order:1; /* سایدبار قبل از محتوا */
+    gap:10px;
+  }
+
+  /* منو به صورت افقی قابل اسکرول شود تا جا کم نیاورد */
+  .menu{
+    flex-direction:row;
+    gap:8px;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* دکمه‌های منو کوچک‌تر و فشرده‌تر شوند */
+  .menu-item{
+    padding:8px 10px;
+    white-space:nowrap; /* جلوگیری از شکستن متن */
+    font-size:0.9rem;
+  }
+
+  /* اکشن‌ها در ردیف کنار هم قرار می‌گیرند */
+  .sidebar-actions{
+    display:flex;
+    gap:8px;
+    margin-top:0;
+    margin-left:auto; /* در RTL باعث می‌شود اکشن‌ها در سمت چپ داخلی قرار گیرند */
+  }
+
+  /* محتوا زیر سایدبار قرار می‌گیرد */
+  .content{
+    padding:16px;
+    order:2; /* محتوا بعد از سایدبار */
+  }
 }
+
+/* کوچک‌تر از موبایل برای فاصله‌ها و فونت */
 @media (max-width:480px){
   :root{font-size:15px}
-  .menu-item{padding:8px 10px;font-size:0.9rem}
+  .menu-item{padding:7px 9px;font-size:0.88rem}
   .brand h1{font-size:1rem}
 }
