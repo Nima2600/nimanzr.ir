@@ -400,3 +400,8 @@ body.printing .summary-text{overflow:visible}
   .cards{page-break-inside:avoid}
   img{max-width:100%}
 }
+
+.page:focus {
+  outline: none;
+}
+
