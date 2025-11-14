@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>وضعیت مدرک</title>
+  <style>
+    :root {
+      --bg: #0b0b0d;        /* مشکی تیره */
+      --text: #6a4c9c;      /* بنفش تیره */
+      --muted: #9b87bd33;   /* هایلایت خیلی کم‌رنگ */
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: radial-gradient(1200px 800px at 50% 20%, var(--muted), transparent) var(--bg);
+      color: var(--text);
+      font-family: "Vazirmatn", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .container {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+
+    .card {
+      border: 1px solid #2a2340;
+      background: #0f0f12cc;
+      backdrop-filter: blur(6px);
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px #00000070;
+    }
+
+    .title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #a496c9;
+      margin: 0 0 1.75rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid #3a2f5a;
+      color: #b7a7de;
+      background: #1a1529cc;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="card" aria-label="وضعیت مدرک">
+      <h1 class="title">مدرک صادر نشده است</h1>
+      <p class="subtitle">در حال حاضر هیچ مدرکی برای شما ثبت و صادر نشده است.</p>
+      <span class="badge">وضعیت: ناموجود</span>
+    </section>
+  </div>
+</body>
+</html>
